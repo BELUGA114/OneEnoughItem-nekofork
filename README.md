@@ -118,7 +118,7 @@ modA:silver_ingot
 
 确保已安装以下 Mod：
 - [Fabric API](https://modrinth.com/mod/fabric-api)
-- [OELib](https://github.com/Tower-of-Sighs/OELib)（如果未 bundled）
+- [OELib](https://github.com/BELUGA114/OELib-nekofork/releases)
 
 ### 2️⃣ 创建配置文件
 
@@ -447,7 +447,7 @@ A: 检查 `resultItems` 指向的目标物品是否存在。如果目标 Mod 未
 ## 🔗 相关链接
 
 - [原项目地址](https://github.com/Tower-of-Sighs/OneEnoughItem)
-- [OELib](https://github.com/Tower-of-Sighs/OELib)
+- [OELib](https://github.com/BELUGA114/OELib-nekofork)
 - [Fabric 官方文档](https://fabricmc.net/wiki/)
 
 ---
