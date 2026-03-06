@@ -2,11 +2,12 @@
   "schemaVersion": 1,
   "id": "oneenoughitem",
   "version": "${version}",
-  "name": "OneEnoughItem",
+  "name": "OneEnoughItem NekoFork",
   "description": "",
   "authors": [
     "Flechazo",
-    "Mafuyu404"
+    "Mafuyu404",
+    "Cobweb11"
   ],
   "contact": {},
   "license": "GPL-3.0",

@@ -33,6 +33,9 @@ dependencies {
 
 loom {
     accessWidenerPath = file("src/main/resources/oneenoughitem.accesswidener")
+    mixin {
+        useLegacyMixinAp = false
+    }
 }
 
 processResources {
