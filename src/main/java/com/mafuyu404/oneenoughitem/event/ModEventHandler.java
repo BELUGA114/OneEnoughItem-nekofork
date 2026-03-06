@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -71,6 +72,9 @@ public class ModEventHandler {
             player.sendSystemMessage(line1);
             player.sendSystemMessage(line2);
         }
+
+        // Rebuild replacement cache on client join
+        rebuildReplacementCache();
     }
 
     private static void rebuildReplacementCache() {
@@ -90,13 +94,19 @@ public class ModEventHandler {
                 Oneenoughitem.LOGGER.debug("Rebuilt replacement cache with {} rules from OELib data manager",
                         replacements.size());
             } else {
-                Oneenoughitem.LOGGER.warn("No server instance available, cannot rebuild replacement cache with registry lookup");
-
+                // Use BuiltInRegistries for client-side fallback - simple direct mapping
                 var replacements = manager.getDataList();
                 for (Replacements replacement : replacements) {
-                    Oneenoughitem.LOGGER.debug("Skipping replacement cache for {} due to missing server context",
-                            replacement.resultItems());
+                    var matchItems = replacement.matchItems();
+                    if (matchItems.size() == 1 && !matchItems.get(0).startsWith("#")) {
+                        ReplacementCache.putReplacementDirect(matchItems.get(0), replacement.resultItems());
+                    } else {
+                        Oneenoughitem.LOGGER.warn("Skipping complex replacement on client: {}", replacement);
+                    }
                 }
+
+                Oneenoughitem.LOGGER.debug("Rebuilt replacement cache with {} rules using direct mapping",
+                        replacements.size());
             }
         } else {
             Oneenoughitem.LOGGER.warn("No replacement data manager found in OELib");
