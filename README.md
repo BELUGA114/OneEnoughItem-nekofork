@@ -1,6 +1,6 @@
 # OneEnoughItem - Fabric 物品统一系统
 
-[![GitHub Stars](https://img.shields.io/github/stars/your-repo/OneEnoughItem-nekofork?style=flat-square)](https://github.com/BELUGA114/OneEnoughItem-nekofork/stargazers)
+[![GitHub Stars](https://img.shields.io/github/stars/BELUGA114/OneEnoughItem-nekofork?style=flat-square)](https://github.com/BELUGA114/OneEnoughItem-nekofork/stargazers)
 [![License](https://img.shields.io/github/license/BELUGA114/OneEnoughItem-nekofork?style=flat-square)](LICENSE)
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-blue)](https://www.minecraft.net/)
 [![Fabric](https://img.shields.io/badge/Fabric-Legacy-lightgrey)](https://fabricmc.net/)
@@ -10,6 +10,39 @@
 > 本项目 Fork 自 [OneEnoughItem](https://github.com/Tower-of-Sighs/OneEnoughItem)
 > 
 > 由于原项目的 Fabric 分支已停止维护，因此 Fork 过来自用。
+
+---
+
+## ✨ TL;DR
+
+OEI 用于解决 **整合包中多个 Mod 添加相同物品的问题**。
+
+**例如：**
+
+* `modA:silver_ingot`
+* `modB:silver_ingot`
+* `modC:silver_ingot`
+
+**统一为：**
+
+```
+modA:silver_ingot
+```
+
+**只需一个 JSON 文件** 即可完成配置。
+
+---
+
+# 📚 目录
+
+* [简介](#-简介)
+* [核心功能](#-核心功能)
+* [Fabric vs NeoForge](#-fabric-vs-neoforge-版本对比)
+* [快速开始](#-快速开始)
+* [配置示例](#-配置示例)
+* [技术细节与架构对比](#-技术细节与架构对比)
+* [适用场景](#-适用场景)
+* [常见问题](#-常见问题)
 
 ---
 
