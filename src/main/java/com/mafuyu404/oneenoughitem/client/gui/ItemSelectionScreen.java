@@ -1,6 +1,7 @@
 package com.mafuyu404.oneenoughitem.client.gui;
 
 import com.mafuyu404.oneenoughitem.client.gui.components.ItemGridWidget;
+import com.mafuyu404.oneenoughitem.init.ReplacementControl;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -177,7 +178,9 @@ public class ItemSelectionScreen extends Screen {
         int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, this.filteredItems.size());
 
         for (int i = startIndex; i < endIndex; i++) {
-            pageItems.add(new ItemStack(this.filteredItems.get(i)));
+            final int index = i; // 创建最终变量副本
+            ItemStack itemStack = ReplacementControl.withSkipReplacement(() -> new ItemStack(this.filteredItems.get(index)));
+            pageItems.add(itemStack);
         }
 
         this.itemGrid.setItems(pageItems);

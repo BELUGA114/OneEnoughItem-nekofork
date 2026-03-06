@@ -1,6 +1,10 @@
 [
   {
-    "matchItems": ["minecraft:egg"],
-  "resultItems": "minecraft:diamond"
+    "matchItems": ["minecraft:diamond"],
+    "resultItems": "minecraft:egg"
+  },
+  {
+    "matchItems": ["minecraft:stick", "minecraft:stone"],
+    "resultItems": "minecraft:iron_ingot"
   }
 ]

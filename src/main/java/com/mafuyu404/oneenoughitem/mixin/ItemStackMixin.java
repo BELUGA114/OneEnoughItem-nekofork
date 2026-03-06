@@ -1,7 +1,9 @@
 package com.mafuyu404.oneenoughitem.mixin;
 
 import com.mafuyu404.oneenoughitem.Oneenoughitem;
+import com.mafuyu404.oneenoughitem.init.ItemRedirector;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;
+import com.mafuyu404.oneenoughitem.init.ReplacementControl;
 import com.mafuyu404.oneenoughitem.init.Utils;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.PatchedDataComponentMap;
@@ -50,24 +52,46 @@ public class ItemStackMixin {
             return;
         }
 
-        String originItemId = Utils.getItemRegistryName(this.item);
-        String targetItemId = ReplacementCache.matchItem(originItemId);
+        // 检查是否需要跳过替换（用于 GUI 显示等场景）
+        if (ReplacementControl.shouldSkipReplacement()) {
+            return;
+        }
 
-        if (targetItemId != null) {
-            Item newItem = Utils.getItemById(targetItemId);
-            if (newItem != null) {
-                DataComponentPatch currentPatch = this.components.asPatch();
-
-                this.item = newItem;
-
-                this.components = PatchedDataComponentMap.fromPatch(newItem.components(), currentPatch);
-
-                newItem.verifyComponentsAfterLoad((ItemStack) (Object) this);
-
-                Oneenoughitem.LOGGER.debug("Successfully replaced item {} with {}", originItemId, targetItemId);
-            } else {
-                Oneenoughitem.LOGGER.warn("Target item not found: {}", targetItemId);
+        Item newItem = null;
+        String originItemId = null;
+        
+        // 先尝试使用 ItemRedirector（注册阶段）
+        if (ItemRedirector.hasRedirects()) {
+            newItem = ItemRedirector.lookup(this.item);
+            if (newItem != null && newItem != this.item) {
+                originItemId = Utils.getItemRegistryName(this.item);
+                Oneenoughitem.LOGGER.debug("ItemRedirector replaced: {} -> {}", 
+                        originItemId, Utils.getItemRegistryName(newItem));
             }
+        }
+        
+        // 如果 ItemRedirector 没有替换，尝试 ReplacementCache  ID 映射
+        if (newItem == null || newItem == this.item) {
+            String targetItemId = ReplacementCache.matchItem(Utils.getItemRegistryName(this.item));
+            if (targetItemId != null) {
+                newItem = Utils.getItemById(targetItemId);
+                if (newItem != null) {
+                    originItemId = Utils.getItemRegistryName(this.item);
+                    Oneenoughitem.LOGGER.debug("ReplacementCache replaced: {} -> {}", originItemId, targetItemId);
+                }
+            }
+        }
+        
+        // 3. 如果找到了新的物品，执行替换
+        if (newItem != null && newItem != this.item) {
+            DataComponentPatch currentPatch = this.components.asPatch();
+
+            this.item = newItem;
+            this.components = PatchedDataComponentMap.fromPatch(newItem.components(), currentPatch);
+            newItem.verifyComponentsAfterLoad((ItemStack) (Object) this);
+
+            Oneenoughitem.LOGGER.debug("Successfully replaced item {} with {}", 
+                    originItemId, Utils.getItemRegistryName(newItem));
         }
     }
 

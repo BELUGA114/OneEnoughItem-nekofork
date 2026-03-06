@@ -8,6 +8,7 @@ import com.mafuyu404.oneenoughitem.client.gui.components.TagDisplayWidget;
 import com.mafuyu404.oneenoughitem.client.gui.manager.ReplacementEditorManager;
 import com.mafuyu404.oneenoughitem.client.gui.util.GuiUtils;
 import com.mafuyu404.oneenoughitem.client.gui.util.PathUtils;
+import com.mafuyu404.oneenoughitem.init.ReplacementControl;
 import com.mafuyu404.oneenoughitem.init.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -79,7 +80,8 @@ public class ReplacementEditorScreen extends Screen {
                 ResourceLocation id = ResourceLocation.parse(itemId);
                 Item item = BuiltInRegistries.ITEM.get(id);
                 this.manager.addMatchItem(item);
-                ItemDisplayWidget widget = new ItemDisplayWidget(0, 0, new ItemStack(item),
+                ItemStack displayStack = ReplacementControl.withSkipReplacement(() -> new ItemStack(item));
+                ItemDisplayWidget widget = new ItemDisplayWidget(0, 0, displayStack,
                         button -> this.removeMatchItem(item));
                 this.matchItemWidgets.add(widget);
             }
@@ -96,7 +98,8 @@ public class ReplacementEditorScreen extends Screen {
                 ResourceLocation id = ResourceLocation.parse(cache.resultItem());
                 Item item = BuiltInRegistries.ITEM.get(id);
                 this.manager.setResultItem(item);
-                this.resultItemWidget = new ItemDisplayWidget(0, 0, new ItemStack(item), null);
+                ItemStack displayStack = ReplacementControl.withSkipReplacement(() -> new ItemStack(item));
+                this.resultItemWidget = new ItemDisplayWidget(0, 0, displayStack, null);
             }
 
             if (cache.resultTag() != null) {
@@ -218,7 +221,7 @@ public class ReplacementEditorScreen extends Screen {
         for (Item item : this.manager.getMatchItems()) {
             String originalItemId = Utils.getItemRegistryName(item);
 
-            ItemStack displayStack = new ItemStack(item);
+            ItemStack displayStack = ReplacementControl.withSkipReplacement(() -> new ItemStack(item));
 
             ItemDisplayWidget widget = new ItemDisplayWidget(0, 0, displayStack,
                     button -> {
@@ -234,7 +237,8 @@ public class ReplacementEditorScreen extends Screen {
         }
 
         if (this.manager.getResultItem() != null) {
-            this.resultItemWidget = new ItemDisplayWidget(0, 0, new ItemStack(this.manager.getResultItem()), null);
+            ItemStack displayStack = ReplacementControl.withSkipReplacement(() -> new ItemStack(this.manager.getResultItem()));
+            this.resultItemWidget = new ItemDisplayWidget(0, 0, displayStack, null);
         }
 
         if (this.manager.getResultTag() != null) {
@@ -485,7 +489,8 @@ public class ReplacementEditorScreen extends Screen {
 
         this.manager.addMatchItem(item);
         String itemId = Utils.getItemRegistryName(item);
-        ItemDisplayWidget widget = new ItemDisplayWidget(0, 0, new ItemStack(item),
+        ItemStack displayStack = ReplacementControl.withSkipReplacement(() -> new ItemStack(item));
+        ItemDisplayWidget widget = new ItemDisplayWidget(0, 0, displayStack,
                 button -> this.removeMatchItemById(itemId), itemId);
         this.matchItemWidgets.add(widget);
         this.rebuildPanels();
@@ -506,7 +511,8 @@ public class ReplacementEditorScreen extends Screen {
 
     public void setResultItem(Item item) {
         this.manager.setResultItem(item);
-        this.resultItemWidget = new ItemDisplayWidget(0, 0, new ItemStack(item), null);
+        ItemStack displayStack = ReplacementControl.withSkipReplacement(() -> new ItemStack(item));
+        this.resultItemWidget = new ItemDisplayWidget(0, 0, displayStack, null);
         this.resultTagWidget = null;
         this.rebuildPanels();
     }
