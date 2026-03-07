@@ -115,6 +115,8 @@
   "warning.oneenoughitem.item_exists": "重复添加的物品",
   "warning.oneenoughitem.tag_exists": "重复添加的标签",
 
+  "message.oneenoughitem.gui_disabled_in_server": "§c在服务器中无法使用 OEI！本模组仅在单人游戏中允许编辑配置。",
+
   "oneenoughitem.modernfix.warning.line1": "OneEnoughItem：检测到模组现代化修复配置选项 mixin.perf.faster_ingredients 为 true，",
   "oneenoughitem.modernfix.warning.line2": "为了保证本模组替换物品后配方生效，",
   "oneenoughitem.modernfix.warning.link": "请改为 false",

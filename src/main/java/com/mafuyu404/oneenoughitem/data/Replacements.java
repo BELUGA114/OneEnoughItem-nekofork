@@ -9,7 +9,7 @@ import java.util.List;
 @DataDriven(
         modid = "oneenoughitem",
         folder = "replacements",
-        syncToClient = true,
+        syncToClient =false,        //暂时关闭客户端同步，待OELib完善
         validator = ReplacementValidator.class,
         supportArray = true
 )
