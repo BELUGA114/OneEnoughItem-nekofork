@@ -4,6 +4,7 @@ import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.ApiStatus;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -58,12 +59,12 @@ public class ItemRedirector {
             Item sourceItem = BuiltInRegistries.ITEM.get(sourceLoc);
             Item targetItem = BuiltInRegistries.ITEM.get(targetLoc);
             
-            if (sourceItem != null && targetItem != null) {
+            if (sourceItem != Items.AIR && targetItem != Items.AIR) {       //过滤掉无效的物品 ID
                 redirectMap.put(sourceItem, targetItem);
                 OEILog.info("物品替换：{} -> {}", sourceId, targetId);
                 successCount++;
             } else {
-                OEILog.warn("替换失败：{} 或 {} 未找到", sourceId, targetId);
+                OEILog.warn("替换失败：{} 或 {} 未找到（可能是无效的物品 ID）", sourceId, targetId);
                 failCount++;
             }
         }

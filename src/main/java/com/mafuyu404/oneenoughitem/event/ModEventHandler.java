@@ -58,7 +58,7 @@ public class ModEventHandler {
 
                 OEILog.info("服务端缓存重建完成，共 {} 条规则", replacements.size());
             } else {
-                // 客户端逻辑 - 现在也支持复杂替换
+                // 客户端逻辑 - 终于支持复杂替换了喵
                 OEILog.info("=== 客户端：重建替换缓存（支持复杂替换） ===");
                 var replacements = manager.getDataList();
                 int processedCount = 0;

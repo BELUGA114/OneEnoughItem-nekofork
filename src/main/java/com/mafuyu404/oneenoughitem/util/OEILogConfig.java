@@ -6,10 +6,6 @@ package com.mafuyu404.oneenoughitem.util;
  *
  */
 public class OEILogConfig {
-    
-    /**
-     * 日志级别枚举
-     */
     public enum LogLevel {
         TRACE,  // 最详细的调试信息
         DEBUG,  // 调试信息
@@ -91,8 +87,7 @@ public class OEILogConfig {
     // ==================== 预设模式 ====================
     
     /**
-     * 开发模式：开启所有日志级别（包括 TRACE）
-     * 适合模组开发者和测试人员使用
+     * 开发模式：开启所有日志级别
      */
     public static void devMode() {
         setLogLevel(LogLevel.TRACE);
@@ -100,7 +95,6 @@ public class OEILogConfig {
     
     /**
      * 调试模式：开启 DEBUG 及以上级别
-     * 适合需要详细调试信息但不需要 TRACE 的场景
      */
     public static void debugMode() {
         setLogLevel(LogLevel.DEBUG);
@@ -108,7 +102,6 @@ public class OEILogConfig {
     
     /**
      * 普通模式：只开启 INFO 及以上级别
-     * 适合普通玩家日常使用
      */
     public static void normalMode() {
         setLogLevel(LogLevel.INFO);
@@ -116,7 +109,6 @@ public class OEILogConfig {
     
     /**
      * 精简模式：只开启 WARN 和 ERROR
-     * 适合只想看警告和错误的场景
      */
     public static void minimalMode() {
         setLogLevel(LogLevel.WARN);
@@ -124,7 +116,6 @@ public class OEILogConfig {
     
     /**
      * 生产模式：只记录 ERROR
-     * 适合服务器或性能敏感的场景
      */
     public static void productionMode() {
         setLogLevel(LogLevel.ERROR);
@@ -132,7 +123,6 @@ public class OEILogConfig {
     
     /**
      * 安静模式：关闭所有日志
-     * 适合完全不需要日志的场景
      */
     public static void silentMode() {
         setLogLevel(LogLevel.OFF);

@@ -11,7 +11,7 @@ public class OEILog {
     private static final Logger LOGGER = Oneenoughitem.LOGGER;
     
     // 日志级别开关
-    private static boolean enableTrace = false;
+    private static boolean enableTrace = false;     //Trace太多了，先关着
     private static boolean enableDebug = true;
     private static boolean enableInfo = true;
     private static boolean enableWarn = true;
@@ -188,7 +188,7 @@ public class OEILog {
     }
     
     // ==================== TRACE 级别 ====================
-    //trace方案暂时没有被使用
+    //trace方案暂时没有被使用, 因为trace级别日志太多，影响游戏性能，但是暂时保留
     public static void trace(Object message) {
         if (enableTrace) {
             LOGGER.trace(formatMessage(message.toString()));
@@ -289,9 +289,9 @@ public class OEILog {
     
     // ==================== 日志级别控制 ====================
     
-    /**
-     * 设置所有日志级别的开关
-     */
+
+    //设置所有日志级别的开关
+
     public static void setAllLevels(boolean enabled) {
         enableTrace = enabled;
         enableDebug = enabled;
@@ -300,9 +300,9 @@ public class OEILog {
         enableError = enabled;
     }
     
-    /**
-     * 设置特定日志级别的开关
-     */
+
+    //设置特定日志级别的开关
+
     public static void setLevelEnabled(String levelName, boolean enabled) {
         switch (levelName.toUpperCase()) {
             case "TRACE" -> enableTrace = enabled;
@@ -313,9 +313,9 @@ public class OEILog {
         }
     }
     
-    /**
-     * 生产模式：只保留 INFO 及以上级别
-     */
+
+    //生产模式：只保留 INFO 及以上级别
+
     public static void setProductionMode() {
         enableTrace = false;
         enableDebug = false;
@@ -324,9 +324,9 @@ public class OEILog {
         enableError = true;
     }
     
-    /**
-     * 开发模式：开启所有级别
-     */
+
+    //开发模式：开启所有级别
+
     public static void setDevelopmentMode() {
         enableTrace = true;
         enableDebug = true;
@@ -335,9 +335,9 @@ public class OEILog {
         enableError = true;
     }
     
-    /**
-     * 安静模式：只保留 ERROR
-     */
+
+    //安静模式：只保留 ERROR
+
     public static void setQuietMode() {
         enableTrace = false;
         enableDebug = false;
@@ -345,10 +345,10 @@ public class OEILog {
         enableWarn = false;
         enableError = true;
     }
-    
-    /**
-     * 获取当前日志配置信息
-     */
+
+
+    //获取当前日志配置信息
+
     public static String getLogLevelConfig() {
         return String.format(
             "Log Config [TRACE:%b, DEBUG:%b, INFO:%b, WARN:%b, ERROR:%b]",

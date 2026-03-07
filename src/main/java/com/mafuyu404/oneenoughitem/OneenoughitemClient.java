@@ -8,7 +8,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-/**
+/*
  * 客户端初始化入口
  * 仅在客户端环境加载
  */
