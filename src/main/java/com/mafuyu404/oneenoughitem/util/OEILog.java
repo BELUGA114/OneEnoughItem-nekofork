@@ -47,18 +47,16 @@ public class OEILog {
      * 判断是否在服务端（包括内置服务器）
      */
     public static boolean isServerSide() {
+        if (!isClientSide()) {
+            // 无法获取客户端实例，是纯服务端
+            return true;
+        }
+        
         try {
-            // 检查是否是 dedicated server
-            if (Minecraft.getInstance().getSingleplayerServer() != null) {
-                return true;
-            }
-            // 检查是否有 level（单人游戏或服务器中的玩家）
-            if (Minecraft.getInstance().level != null) {
-                return true;
-            }
-            return false;
+            Minecraft mc = Minecraft.getInstance();
+            // 检查是否是单人游戏的内置服务器
+            return mc.getSingleplayerServer() != null || mc.level != null;
         } catch (Exception e) {
-            // 无法获取客户端实例，可能是纯服务端
             return true;
         }
     }
@@ -138,7 +136,9 @@ public class OEILog {
     }
     
     // ==================== TRACE 级别 ====================
+    // 注意：TRACE 级别日志通常用于非常详细的调试信息，当前未使用
     
+    /*
     public static void trace(Object message) {
         if (enableTrace) {
             LOGGER.trace(formatMessage(message.toString()));
@@ -156,6 +156,7 @@ public class OEILog {
             LOGGER.trace(formatMessageWithParams(message), t);
         }
     }
+    */
     
     // ==================== DEBUG 级别 ====================
     
@@ -191,11 +192,13 @@ public class OEILog {
         }
     }
     
+    /*
     public static void info(Throwable t, String message) {
         if (enableInfo) {
             LOGGER.info(formatMessageWithParams(message), t);
         }
     }
+    */
     
     // ==================== WARN 级别 ====================
     
@@ -211,11 +214,13 @@ public class OEILog {
         }
     }
     
+    /*
     public static void warn(Throwable t, String message) {
         if (enableWarn) {
             LOGGER.warn(formatMessageWithParams(message), t);
         }
     }
+    */
     
     // ==================== ERROR 级别 ====================
     
@@ -239,9 +244,7 @@ public class OEILog {
     
     // ==================== 日志级别控制 ====================
     
-    /**
-     * 设置所有日志级别的开关
-     */
+    /*
     public static void setAllLevels(boolean enabled) {
         enableTrace = enabled;
         enableDebug = enabled;
@@ -250,9 +253,6 @@ public class OEILog {
         enableError = enabled;
     }
     
-    /**
-     * 设置特定日志级别的开关
-     */
     public static void setLevelEnabled(String levelName, boolean enabled) {
         switch (levelName.toUpperCase()) {
             case "TRACE" -> enableTrace = enabled;
@@ -262,6 +262,7 @@ public class OEILog {
             case "ERROR" -> enableError = enabled;
         }
     }
+    */
     
     /**
      * 生产模式：只保留 INFO 及以上级别
@@ -287,7 +288,9 @@ public class OEILog {
     
     /**
      * 安静模式：只保留 ERROR
+     * 注意：此方法当前未使用，但保留以备将来需要
      */
+    /*
     public static void setQuietMode() {
         enableTrace = false;
         enableDebug = false;
@@ -295,6 +298,7 @@ public class OEILog {
         enableWarn = false;
         enableError = true;
     }
+    */
     
     /**
      * 获取当前日志配置信息
