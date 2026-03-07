@@ -136,9 +136,7 @@ public class OEILog {
     }
     
     // ==================== TRACE 级别 ====================
-    // 注意：TRACE 级别日志通常用于非常详细的调试信息，当前未使用
     
-    /*
     public static void trace(Object message) {
         if (enableTrace) {
             LOGGER.trace(formatMessage(message.toString()));
@@ -156,7 +154,6 @@ public class OEILog {
             LOGGER.trace(formatMessageWithParams(message), t);
         }
     }
-    */
     
     // ==================== DEBUG 级别 ====================
     
@@ -192,13 +189,11 @@ public class OEILog {
         }
     }
     
-    /*
     public static void info(Throwable t, String message) {
         if (enableInfo) {
             LOGGER.info(formatMessageWithParams(message), t);
         }
     }
-    */
     
     // ==================== WARN 级别 ====================
     
@@ -214,13 +209,11 @@ public class OEILog {
         }
     }
     
-    /*
     public static void warn(Throwable t, String message) {
         if (enableWarn) {
             LOGGER.warn(formatMessageWithParams(message), t);
         }
     }
-    */
     
     // ==================== ERROR 级别 ====================
     
@@ -244,7 +237,9 @@ public class OEILog {
     
     // ==================== 日志级别控制 ====================
     
-    /*
+    /**
+     * 设置所有日志级别的开关
+     */
     public static void setAllLevels(boolean enabled) {
         enableTrace = enabled;
         enableDebug = enabled;
@@ -253,6 +248,9 @@ public class OEILog {
         enableError = enabled;
     }
     
+    /**
+     * 设置特定日志级别的开关
+     */
     public static void setLevelEnabled(String levelName, boolean enabled) {
         switch (levelName.toUpperCase()) {
             case "TRACE" -> enableTrace = enabled;
@@ -262,7 +260,6 @@ public class OEILog {
             case "ERROR" -> enableError = enabled;
         }
     }
-    */
     
     /**
      * 生产模式：只保留 INFO 及以上级别
@@ -288,9 +285,7 @@ public class OEILog {
     
     /**
      * 安静模式：只保留 ERROR
-     * 注意：此方法当前未使用，但保留以备将来需要
      */
-    /*
     public static void setQuietMode() {
         enableTrace = false;
         enableDebug = false;
@@ -298,7 +293,6 @@ public class OEILog {
         enableWarn = false;
         enableError = true;
     }
-    */
     
     /**
      * 获取当前日志配置信息
@@ -308,5 +302,40 @@ public class OEILog {
             "Log Config [TRACE:%b, DEBUG:%b, INFO:%b, WARN:%b, ERROR:%b]",
             enableTrace, enableDebug, enableInfo, enableWarn, enableError
         );
+    }
+    
+    /**
+     * 检查 TRACE 级别是否启用
+     */
+    public static boolean isTraceEnabled() {
+        return enableTrace;
+    }
+    
+    /**
+     * 检查 DEBUG 级别是否启用
+     */
+    public static boolean isDebugEnabled() {
+        return enableDebug;
+    }
+    
+    /**
+     * 检查 INFO 级别是否启用
+     */
+    public static boolean isInfoEnabled() {
+        return enableInfo;
+    }
+    
+    /**
+     * 检查 WARN 级别是否启用
+     */
+    public static boolean isWarnEnabled() {
+        return enableWarn;
+    }
+    
+    /**
+     * 检查 ERROR 级别是否启用
+     */
+    public static boolean isErrorEnabled() {
+        return enableError;
     }
 }
