@@ -188,13 +188,13 @@ public class OEILog {
     }
     
     // ==================== TRACE 级别 ====================
-    
+    //trace方案暂时没有被使用
     public static void trace(Object message) {
         if (enableTrace) {
             LOGGER.trace(formatMessage(message.toString()));
         }
     }
-    
+
     public static void trace(String message, Object... params) {
         if (enableTrace) {
             LOGGER.trace(formatMessageWithParams(message, params));
