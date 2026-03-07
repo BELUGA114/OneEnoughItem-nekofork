@@ -129,7 +129,6 @@ data/oneenoughitem/replacements/example.json
 ```
 
 **完整路径示例**：
-- 直接安装：`minecraft/data/oneenoughitem/replacements/example.json`
 - 整合包开发：`src/main/resources/data/oneenoughitem/replacements/example.json`
 - 数据包：`your_datapack/data/oneenoughitem/replacements/example.json`
 
@@ -154,13 +153,7 @@ data/oneenoughitem/replacements/example.json
 
 ### 4️⃣ 加载配置
 
-#### 方法 A: 直接放入游戏目录（推荐新手）
-
-1. 按上述路径创建文件
-2. 启动游戏
-3. 进入世界后自动生效
-
-#### 方法 B: 打包进 Mod Jar（开发者）
+#### 方法 A: 打包进 Mod Jar（开发者）
 
 **说明**：将配置文件直接放进编译好的 Mod 文件里，用户安装后自动就有配置了。
 
@@ -189,7 +182,7 @@ data/oneenoughitem/replacements/example.json
 
 **适用场景**：整合包作者预置配置、Mod 联动
 
-#### 方法 C: 使用数据包
+#### 方法 B: 使用数据包 (Datapack)
 
 将配置文件放入数据包结构：
 ```
@@ -201,12 +194,36 @@ your_datapack/
             └── example.json
 ```
 
-放入 `.minecraft/saves/你的世界/datapacks/` 或用 `/datapack` 命令加载。
+**放置位置**：
+- **服务端/单人游戏**: `world/datapacks/OEI/data/oneenoughitem/replacements/`
+- **单人游戏存档**: `.minecraft/saves/你的世界/datapacks/OEI/data/oneenoughitem/replacements/`
+
+**优先级说明**：
+- ✅ **数据包配置 > Mod 内置配置**
+- ✅ 如果两处都有相同的替换规则，**数据包的会覆盖 Mod 的**
+- ✅ 多个数据包时，后加载的覆盖先加载的（可通过 `pack.mcmeta` 的 `position` 控制）
+
+**示例场景**：
+```json
+// src/main/resources/data/oneenoughitem/replacements/example.json (Mod 内置)
+[
+  {"matchItems": ["modA:apple"], "resultItems": "minecraft:diamond"}
+]
+
+// world/datapacks/OEI/data/oneenoughitem/replacements/example.json (数据包)
+[
+  {"matchItems": ["modA:apple"], "resultItems": "minecraft:emerald"}  // 这个会覆盖上面的！
+]
+```
+
+最终生效的是：`modA:apple → minecraft:emerald`
+
+用 `/datapack` 命令管理数据包加载顺序和启用状态。
 
 ### 5️⃣ 验证效果
 
 进入游戏测试：
-- ✅ 捡起被替换的物品 → 应该变成目标物品
+- ✅ 被替换的物品 → 变成目标物品
 - ✅ 打开箱子 → 物品应已替换
 - ⚠️ JEI/REI 配方显示 → 仍显示原配方（**Fabric 是这样的**）
 - ℹ️ 如需配方也替换 → 请使用 NeoForge 版本

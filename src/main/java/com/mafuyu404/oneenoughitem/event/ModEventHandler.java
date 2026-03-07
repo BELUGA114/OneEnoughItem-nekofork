@@ -6,11 +6,15 @@ import com.mafuyu404.oelib.event.Events;
 import com.mafuyu404.oneenoughitem.data.Replacements;
 import com.mafuyu404.oneenoughitem.init.ItemRedirector;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;
+import com.mafuyu404.oneenoughitem.init.Utils;
 import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.Item;
+
+import java.util.List;
 
 public class ModEventHandler {
 
@@ -54,28 +58,47 @@ public class ModEventHandler {
 
                 OEILog.info("服务端缓存重建完成，共 {} 条规则", replacements.size());
             } else {
-                // 客户端逻辑
-                OEILog.info("=== 客户端：使用降级模式重建替换缓存 ===");
+                // 客户端逻辑 - 现在也支持复杂替换
+                OEILog.info("=== 客户端：重建替换缓存（支持复杂替换） ===");
                 var replacements = manager.getDataList();
                 int processedCount = 0;
-                int skippedCount = 0;
+                int failedCount = 0;
+                
+                // 使用 BuiltInRegistries 进行简单的 registry lookup
+                HolderLookup.RegistryLookup<Item> clientRegistryLookup = BuiltInRegistries.ITEM.asLookup();
                 
                 for (Replacements replacement : replacements) {
-                    var matchItems = replacement.matchItems();
-                    if (matchItems.size() == 1 && !matchItems.get(0).startsWith("#")) {
-                        OEILog.info("客户端添加简单替换 #{}: {} -> {}", 
-                                ++processedCount, 
-                                matchItems.get(0), 
-                                replacement.resultItems());
-                        ReplacementCache.putReplacementDirect(matchItems.get(0), replacement.resultItems());
-                    } else {
-                        OEILog.warn("客户端跳过复杂替换 #{}: {} (原因：多物品或标签)", 
-                                ++skippedCount, matchItems);
+                    try {
+                        // 尝试解析所有匹配物品（包括标签和多物品）
+                        List<Item> resolvedItems = Utils.resolveItemList(replacement.matchItems(), clientRegistryLookup);
+                        
+                        if (!resolvedItems.isEmpty()) {
+                            // 成功解析，添加到缓存
+                            for (Item item : resolvedItems) {
+                                String itemId = Utils.getItemRegistryName(item);
+                                if (itemId != null) {
+                                    ReplacementCache.putReplacementDirect(itemId, replacement.resultItems());
+                                    processedCount++;
+                                }
+                            }
+                            OEILog.debug("客户端处理替换：{} -> {} (共 {} 个物品)", 
+                                    replacement.matchItems(), replacement.resultItems(), resolvedItems.size());
+                        } else {
+                            OEILog.warn("客户端无法解析替换规则：{} (物品或标签不存在)", replacement.matchItems());
+                            failedCount++;
+                        }
+                    } catch (Exception e) {
+                        OEILog.error(e, "客户端处理替换时出错：" + replacement);
+                        failedCount++;
                     }
                 }
 
-                OEILog.info("客户端缓存重建完成，处理 {} 条，跳过 {} 条", processedCount, skippedCount);
+                OEILog.info("客户端缓存重建完成，成功 {} 条，失败 {} 条", processedCount, failedCount);
             }
+            
+            // 输出数据来源信息，帮助调试
+            OEILog.info("数据来源：已从 DataManager 加载所有 replacements (包含内置资源和 datapacks)");
+            OEILog.info("注意：Minecraft 会自动优先加载 datapack 中的数据，后加载的会覆盖先加载的");
         } else {
             OEILog.error("未找到 OELib 的数据管理器");
         }

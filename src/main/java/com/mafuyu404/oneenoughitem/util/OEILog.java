@@ -1,7 +1,6 @@
 package com.mafuyu404.oneenoughitem.util;
 
 import com.mafuyu404.oneenoughitem.Oneenoughitem;
-import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -33,12 +32,20 @@ public class OEILog {
     
     /**
      * 判断是否在客户端
+     * 使用反射避免服务端加载客户端类
      */
     public static boolean isClientSide() {
         try {
-            Minecraft.getInstance();
+            // 使用反射延迟加载 Minecraft 类，避免服务端崩溃
+            Class<?> minecraftClass = Class.forName("net.minecraft.client.Minecraft");
+            java.lang.reflect.Method getInstanceMethod = minecraftClass.getMethod("getInstance");
+            getInstanceMethod.invoke(null);
             return true;
+        } catch (ClassNotFoundException e) {
+            // 找不到 Minecraft 类，说明在服务端
+            return false;
         } catch (Exception e) {
+            // 其他异常（如调用失败），也认为在服务端
             return false;
         }
     }
@@ -53,10 +60,25 @@ public class OEILog {
         }
         
         try {
-            Minecraft mc = Minecraft.getInstance();
+            // 只有在确认是客户端后才使用 Minecraft 类
+            Class<?> minecraftClass = Class.forName("net.minecraft.client.Minecraft");
+            java.lang.reflect.Method getInstanceMethod = minecraftClass.getMethod("getInstance");
+            Object mc = getInstanceMethod.invoke(null);
+            
+            if (mc == null) {
+                return true;
+            }
+            
             // 检查是否是单人游戏的内置服务器
-            return mc.getSingleplayerServer() != null || mc.level != null;
+            java.lang.reflect.Method getSingleplayerServerMethod = minecraftClass.getMethod("getSingleplayerServer");
+            Object server = getSingleplayerServerMethod.invoke(mc);
+            
+            java.lang.reflect.Method getLevelMethod = minecraftClass.getMethod("getLevel");
+            Object level = getLevelMethod.invoke(mc);
+            
+            return server != null || level != null;
         } catch (Exception e) {
+            // 反射调用失败，默认认为是服务端
             return true;
         }
     }
@@ -68,17 +90,35 @@ public class OEILog {
         // 客户端环境
         if (isClientSide()) {
             try {
-                Minecraft mc = Minecraft.getInstance();
-                if (mc.level != null) {
+                Class<?> minecraftClass = Class.forName("net.minecraft.client.Minecraft");
+                java.lang.reflect.Method getInstanceMethod = minecraftClass.getMethod("getInstance");
+                Object mc = getInstanceMethod.invoke(null);
+                
+                if (mc == null) {
+                    return "[无世界]";
+                }
+                
+                java.lang.reflect.Method getLevelMethod = minecraftClass.getMethod("getLevel");
+                Object level = getLevelMethod.invoke(mc);
+                
+                if (level != null) {
                     // 有世界加载
-                    if (mc.getSingleplayerServer() != null) {
+                    java.lang.reflect.Method getSingleplayerServerMethod = minecraftClass.getMethod("getSingleplayerServer");
+                    Object singleplayerServer = getSingleplayerServerMethod.invoke(mc);
+                    
+                    if (singleplayerServer != null) {
                         return "[单人游戏]";
-                    } else if (mc.getConnection() != null) {
+                    }
+                    
+                    java.lang.reflect.Method getConnectionMethod = minecraftClass.getMethod("getConnection");
+                    Object connection = getConnectionMethod.invoke(mc);
+                    
+                    if (connection != null) {
                         return "[多人游戏]";
                     }
-                } else {
-                    return "[主菜单]";
                 }
+                
+                return "[主菜单]";
             } catch (Exception e) {
                 // 忽略异常，继续下面的检查
             }
@@ -87,9 +127,21 @@ public class OEILog {
         // 服务端环境（包括内置服务器）
         if (isServerSide()) {
             try {
-                Minecraft mc = Minecraft.getInstance();
-                if (mc.getSingleplayerServer() != null && mc.level != null) {
-                    return "[单人游戏]";
+                // 尝试检查是否是单人游戏的内置服务器
+                Class<?> minecraftClass = Class.forName("net.minecraft.client.Minecraft");
+                java.lang.reflect.Method getInstanceMethod = minecraftClass.getMethod("getInstance");
+                Object mc = getInstanceMethod.invoke(null);
+                
+                if (mc != null) {
+                    java.lang.reflect.Method getSingleplayerServerMethod = minecraftClass.getMethod("getSingleplayerServer");
+                    Object singleplayerServer = getSingleplayerServerMethod.invoke(mc);
+                    
+                    java.lang.reflect.Method getLevelMethod = minecraftClass.getMethod("getLevel");
+                    Object level = getLevelMethod.invoke(mc);
+                    
+                    if (singleplayerServer != null && level != null) {
+                        return "[单人游戏]";
+                    }
                 }
             } catch (Exception e) {
                 // 纯服务端环境，没有 Minecraft 实例
