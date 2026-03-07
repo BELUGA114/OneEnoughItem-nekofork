@@ -1,6 +1,7 @@
 package com.mafuyu404.oneenoughitem.client.gui.cache;
 
 import com.mafuyu404.oneenoughitem.Oneenoughitem;
+import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -13,7 +14,39 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class EditorCache {
-    private static final Path CACHE_FILE = Paths.get("config", "oneenoughitem_editor_cache.dat");
+    private static final String CACHE_FILENAME = "oneenoughitem_editor_cache.dat";
+    
+    /**
+     * 获取缓存文件路径（按存档隔离）
+     */
+    private static Path getCacheFilePath() {
+        try {
+            net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+            
+            // 如果在单人游戏中，使用存档级别的缓存
+            if (mc.getSingleplayerServer() != null) {
+                Path worldPath = mc.getSingleplayerServer().getWorldPath(
+                    net.minecraft.world.level.storage.LevelResource.ROOT);
+                Path cachePath = worldPath.resolve(CACHE_FILENAME);
+                OEILog.debug("Using world-specific cache: {}", cachePath);
+                return cachePath;
+            }
+            
+            // 如果在多人游戏中，不使用缓存或使用全局缓存
+            if (mc.level != null && mc.getConnection() != null) {
+                OEILog.debug("Multiplayer detected, using global cache");
+                return Paths.get("config", "oneenoughitem_" + CACHE_FILENAME);
+            }
+            
+            // 主菜单或其他情况，使用全局缓存
+            OEILog.debug("Using global cache in config directory");
+            return Paths.get("config", "oneenoughitem_" + CACHE_FILENAME);
+            
+        } catch (Exception e) {
+            OEILog.error(e, "Failed to determine cache path, using default");
+            return Paths.get("config", "oneenoughitem_" + CACHE_FILENAME);
+        }
+    }
 
     public record CacheData(Set<String> matchItems, Set<String> matchTags, String resultItem, String resultTag,
                             String fileName) {
@@ -21,11 +54,12 @@ public class EditorCache {
 
     public static void saveCache(Set<Item> matchItems, Set<ResourceLocation> matchTags,
                                  Item resultItem, ResourceLocation resultTag, String fileName) {
+        Path cacheFile = getCacheFilePath();
         try {
-            Files.createDirectories(CACHE_FILE.getParent());
+            Files.createDirectories(cacheFile.getParent());
 
             try (DataOutputStream dos = new DataOutputStream(
-                    new BufferedOutputStream(Files.newOutputStream(CACHE_FILE)))) {
+                    new BufferedOutputStream(Files.newOutputStream(cacheFile)))) {
 
                 dos.writeInt(matchItems.size());
                 for (Item item : matchItems) {
@@ -52,7 +86,7 @@ public class EditorCache {
                 dos.flush();
             }
 
-            Oneenoughitem.LOGGER.info("Editor cache saved successfully");
+            OEILog.info("Editor cache saved to: {}", cacheFile);
 
         } catch (IOException e) {
             Oneenoughitem.LOGGER.error("Failed to save editor cache", e);
@@ -60,12 +94,14 @@ public class EditorCache {
     }
 
     public static CacheData loadCache() {
-        if (!Files.exists(CACHE_FILE)) {
+        Path cacheFile = getCacheFilePath();
+        if (!Files.exists(cacheFile)) {
+            OEILog.debug("Cache file not found: {}", cacheFile);
             return null;
         }
 
         try (DataInputStream dis = new DataInputStream(
-                new BufferedInputStream(Files.newInputStream(CACHE_FILE)))) {
+                new BufferedInputStream(Files.newInputStream(cacheFile)))) {
 
             Set<String> matchItems = readStringSet(dis);
             Set<String> matchTags = readStringSet(dis);
@@ -85,11 +121,11 @@ public class EditorCache {
                 fileName = null;
             }
 
-            Oneenoughitem.LOGGER.info("Editor cache loaded successfully");
+            OEILog.info("Editor cache loaded from: {}", cacheFile);
             return new CacheData(matchItems, matchTags, resultItem, resultTag, fileName);
 
         } catch (IOException e) {
-            Oneenoughitem.LOGGER.error("Failed to load editor cache", e);
+            OEILog.error(e, "Failed to load editor cache from: " + cacheFile);
             return null;
         }
     }
@@ -108,13 +144,16 @@ public class EditorCache {
 
 
     public static void clearCache() {
+        Path cacheFile = getCacheFilePath();
         try {
-            if (Files.exists(CACHE_FILE)) {
-                Files.delete(CACHE_FILE);
-                Oneenoughitem.LOGGER.info("Editor cache cleared");
+            if (Files.exists(cacheFile)) {
+                Files.delete(cacheFile);
+                OEILog.info("Editor cache cleared: {}", cacheFile);
+            } else {
+                OEILog.debug("Cache file does not exist, nothing to clear: {}", cacheFile);
             }
         } catch (IOException e) {
-            Oneenoughitem.LOGGER.error("Failed to clear editor cache", e);
+            OEILog.error(e, "Failed to clear editor cache from: " + cacheFile);
         }
     }
 }

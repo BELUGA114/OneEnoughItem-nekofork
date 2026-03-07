@@ -1,6 +1,7 @@
 package com.mafuyu404.oneenoughitem.init;
 
 import com.mafuyu404.oneenoughitem.Oneenoughitem;
+import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -39,14 +40,17 @@ public class ItemRedirector {
      */
     public static void initialize() {
         if (initialized) {
-            Oneenoughitem.LOGGER.warn("ItemRedirector already initialized");
+            OEILog.warn("ItemRedirector already initialized");
             return;
         }
         
-        Oneenoughitem.LOGGER.info("Initializing item redirector...");
+        OEILog.info("Initializing item redirector...");
         
         // 从 ReplacementCache 加载映射
         Map<String, String> cacheContents = ReplacementCache.getCacheContents();
+        
+        int successCount = 0;
+        int failCount = 0;
         
         for (Map.Entry<String, String> entry : cacheContents.entrySet()) {
             String sourceId = entry.getKey();
@@ -60,15 +64,17 @@ public class ItemRedirector {
             
             if (sourceItem != null && targetItem != null) {
                 redirectMap.put(sourceItem, targetItem);
-                Oneenoughitem.LOGGER.debug("Registered redirect: {} -> {}", sourceId, targetId);
+                OEILog.info("物品替换：{} -> {}", sourceId, targetId);
+                successCount++;
             } else {
-                Oneenoughitem.LOGGER.warn("Failed to register redirect: {} or {} not found", 
-                        sourceId, targetId);
+                OEILog.warn("替换失败：{} 或 {} 未找到", sourceId, targetId);
+                failCount++;
             }
         }
         
         initialized = true;
-        Oneenoughitem.LOGGER.info("Item redirector initialized with {} redirects", redirectMap.size());
+        OEILog.info("Item redirector initialized with {} redirects (成功：{}, 失败：{})", 
+                redirectMap.size(), successCount, failCount);
     }
     
     /**
@@ -84,7 +90,13 @@ public class ItemRedirector {
         }
         
         Item redirected = redirectMap.get(original);
-        return redirected != null ? redirected : original;
+        if (redirected != null) {
+            String sourceId = getItemId(original);
+            String targetId = getItemId(redirected);
+            OEILog.debug("物品查找触发替换：{} -> {}", sourceId, targetId);
+            return redirected;
+        }
+        return original;
     }
     
     /**
@@ -95,9 +107,10 @@ public class ItemRedirector {
      */
     public static void addRedirect(Item sourceItem, Item targetItem) {
         if (sourceItem != null && targetItem != null) {
+            String sourceId = getItemId(sourceItem);
+            String targetId = getItemId(targetItem);
             redirectMap.put(sourceItem, targetItem);
-            Oneenoughitem.LOGGER.debug("Added direct redirect: {} -> {}", 
-                    getItemId(sourceItem), getItemId(targetItem));
+            OEILog.info("添加物品替换：{} -> {}", sourceId, targetId);
         }
     }
     
@@ -105,9 +118,11 @@ public class ItemRedirector {
      * 清除所有重定向规则
      */
     public static void clear() {
+        int clearedCount = redirectMap.size();
+        OEILog.info("清除 {} 个物品替换规则", clearedCount);
         redirectMap.clear();
         initialized = false;
-        Oneenoughitem.LOGGER.info("Item redirector cleared");
+        OEILog.info("Item redirector cleared");
     }
     
     /**

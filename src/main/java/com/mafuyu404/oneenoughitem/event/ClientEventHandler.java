@@ -2,12 +2,20 @@ package com.mafuyu404.oneenoughitem.event;
 
 import com.mafuyu404.oneenoughitem.client.ModKeyMappings;
 import com.mafuyu404.oneenoughitem.client.gui.ReplacementEditorScreen;
+import com.mafuyu404.oneenoughitem.util.OEILog;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
+/**
+ * 客户端事件处理器
+ * 仅在客户端环境加载
+ */
+@Environment(EnvType.CLIENT)
 public class ClientEventHandler {
 
     public static void register() {
@@ -15,10 +23,12 @@ public class ClientEventHandler {
             while (ModKeyMappings.OPEN_EDITOR.consumeClick()) {
                 if (client.screen == null && hasCtrlDown(client)) {
                     if (isSingleplayer()) {
+                        OEILog.debug("Opening GUI in singleplayer mode");
                         client.setScreen(new ReplacementEditorScreen());
                     } else {
                         // 在服务器中禁用 GUI，显示提示消息
                         if (client.player != null) {
+                            OEILog.warn("GUI access blocked in multiplayer mode");
                             client.player.displayClientMessage(
                                 Component.translatable(
                                     "message.oneenoughitem.gui_disabled_in_server"

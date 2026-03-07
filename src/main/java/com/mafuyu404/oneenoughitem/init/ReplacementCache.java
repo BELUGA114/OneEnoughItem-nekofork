@@ -2,6 +2,7 @@ package com.mafuyu404.oneenoughitem.init;
 
 import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.data.Replacements;
+import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 
@@ -17,6 +18,7 @@ public class ReplacementCache {
         for (Item item : resolvedItems) {
             String id = Utils.getItemRegistryName(item);
             if (id != null) {
+                OEILog.debug("缓存替换规则：{} -> {}", id, replacement.resultItems());
                 ItemMapCache.put(id, replacement.resultItems());
             }
         }
@@ -24,6 +26,7 @@ public class ReplacementCache {
 
     public static void putReplacementDirect(String sourceItemId, String targetItemId) {
         if (sourceItemId != null && targetItemId != null) {
+            OEILog.debug("直接添加缓存：{} -> {}", sourceItemId, targetItemId);
             ItemMapCache.put(sourceItemId, targetItemId);
         }
     }
@@ -33,8 +36,9 @@ public class ReplacementCache {
     }
 
     public static void clearCache() {
+        int clearedCount = ItemMapCache.size();
+        OEILog.info("清除缓存，共 {} 条替换规则", clearedCount);
         ItemMapCache.clear();
-        Oneenoughitem.LOGGER.info("Cache cleared");
     }
 
     public static String matchItem(String id) {
