@@ -202,23 +202,7 @@ your_datapack/
 - ✅ **数据包配置 > Mod 内置配置**
 - ✅ 如果两处都有相同的替换规则，**数据包的会覆盖 Mod 的**
 - ✅ 多个数据包时，后加载的覆盖先加载的（可通过 `pack.mcmeta` 的 `position` 控制）
-
-**示例场景**：
-```json
-// src/main/resources/data/oneenoughitem/replacements/example.json (Mod 内置)
-[
-  {"matchItems": ["modA:apple"], "resultItems": "minecraft:diamond"}
-]
-
-// world/datapacks/OEI/data/oneenoughitem/replacements/example.json (数据包)
-[
-  {"matchItems": ["modA:apple"], "resultItems": "minecraft:emerald"}  // 这个会覆盖上面的！
-]
-```
-
-最终生效的是：`modA:apple → minecraft:emerald`
-
-用 `/datapack` 命令管理数据包加载顺序和启用状态。
+- ✅ 可用 `/datapack` 命令管理数据包加载顺序和启用状态。
 
 ### 5️⃣ 验证效果
 
