@@ -1,10 +1,7 @@
 package com.mafuyu404.oneenoughitem.util;
 
 import com.mafuyu404.oneenoughitem.Oneenoughitem;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.Logger;
 
 /**

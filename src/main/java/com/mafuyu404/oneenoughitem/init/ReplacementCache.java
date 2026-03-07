@@ -1,6 +1,5 @@
 package com.mafuyu404.oneenoughitem.init;
 
-import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.data.Replacements;
 import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.HolderLookup;

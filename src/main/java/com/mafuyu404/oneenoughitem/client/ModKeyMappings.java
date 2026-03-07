@@ -1,6 +1,5 @@
 package com.mafuyu404.oneenoughitem.client;
 
-import com.mafuyu404.oneenoughitem.util.OEILog;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

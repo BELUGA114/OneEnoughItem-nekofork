@@ -1,14 +1,10 @@
 package com.mafuyu404.oneenoughitem.init;
 
-import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.util.OEILog;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.ApiStatus;
-
 import java.util.IdentityHashMap;
 import java.util.Map;
 

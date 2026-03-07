@@ -3,7 +3,6 @@ package com.mafuyu404.oneenoughitem.event;
 import com.mafuyu404.oelib.core.DataManager;
 import com.mafuyu404.oelib.event.DataReloadEvent;
 import com.mafuyu404.oelib.event.Events;
-import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.data.Replacements;
 import com.mafuyu404.oneenoughitem.init.ItemRedirector;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;

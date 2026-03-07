@@ -6,7 +6,6 @@ import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.client.util.ModernFixDetector;
 import com.mafuyu404.oneenoughitem.data.Replacements;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;
-import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
