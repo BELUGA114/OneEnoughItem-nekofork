@@ -23,9 +23,7 @@ public class OEILogConfig {
      */
     public static void setLogLevel(LogLevel level) {
         switch (level) {
-            case TRACE -> {
-                OEILog.setAllLevels(true);
-            }
+            case TRACE -> OEILog.setAllLevels(true);
             case DEBUG -> {
                 OEILog.setAllLevels(true);
                 OEILog.setLevelEnabled("TRACE", false);
@@ -48,9 +46,7 @@ public class OEILogConfig {
                 OEILog.setLevelEnabled("INFO", false);
                 OEILog.setLevelEnabled("WARN", false);
             }
-            case OFF -> {
-                OEILog.setAllLevels(false);
-            }
+            case OFF -> OEILog.setAllLevels(false);
         }
     }
     
@@ -59,7 +55,7 @@ public class OEILogConfig {
      * 
      * @param levelName 级别名称（不区分大小写）
      */
-    public static void setLogLevel(String levelName) {
+    public static void setLogLevel(String levelName) {      //该方法是为了未来可能会有从配置文件中读取日志级别字符串的需求（如 "DEBUG"、"WARN"）
         try {
             LogLevel level = LogLevel.valueOf(levelName.toUpperCase());
             setLogLevel(level);
