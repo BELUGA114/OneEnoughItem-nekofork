@@ -8,6 +8,7 @@ import com.mafuyu404.oneenoughitem.init.ItemRedirector;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;
 import com.mafuyu404.oneenoughitem.init.Utils;
 import com.mafuyu404.oneenoughitem.util.OEILog;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -22,6 +23,9 @@ public class ModEventHandler {
         Events.on(DataReloadEvent.EVENT)
                 .normal()
                 .register(ModEventHandler::onDataReload);
+        
+        // 注册服务器关闭事件，用于在世界卸载时清除缓存
+        ServerLifecycleEvents.SERVER_STOPPING.register(ModEventHandler::onServerStopping);
     }
 
     public static void onDataReload(Class<?> dataClass, int loadedCount, int invalidCount) {
@@ -102,5 +106,16 @@ public class ModEventHandler {
         } else {
             OEILog.error("未找到 OELib 的数据管理器");
         }
+    }
+    
+    /**
+     * 服务器停止时调用，清除所有替换缓存
+     * 这样可以确保切换存档时，旧存档的配置不会影响新存档
+     */
+   private static void onServerStopping(MinecraftServer server) {
+        OEILog.info("服务器正在停止，清除所有替换缓存...");
+        ReplacementCache.clearCache();
+        ItemRedirector.clear();
+        OEILog.info("缓存已清空，准备下次加载");
     }
 }

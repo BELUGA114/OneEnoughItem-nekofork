@@ -5,6 +5,7 @@ import com.mafuyu404.oelib.event.Events;
 import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.client.util.ModernFixDetector;
 import com.mafuyu404.oneenoughitem.data.Replacements;
+import com.mafuyu404.oneenoughitem.init.ItemRedirector;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,6 +35,9 @@ public class ModClientEventHandler {
         Events.on(ClientPlayConnectionEvents.JOIN)
                 .highest()
                 .register(ModClientEventHandler::onPlayerJoin);
+        
+        // 注册客户端断开连接事件，用于在退出世界时清除缓存
+        ClientPlayConnectionEvents.DISCONNECT.register(ModClientEventHandler::onPlayerDisconnect);
     }
 
     public static void onPlayerJoin(ClientPacketListener handler, PacketSender sender, Minecraft client) {
@@ -104,5 +108,16 @@ public class ModClientEventHandler {
         } else {
             Oneenoughitem.LOGGER.warn("No replacement data manager found in OELib");
         }
+    }
+    
+    /**
+     * 客户端断开连接时调用，清除所有替换缓存
+     * 这样可以确保切换存档时，旧存档的配置不会影响新存档
+     */
+  private static void onPlayerDisconnect(ClientPacketListener handler, Minecraft client) {
+        Oneenoughitem.LOGGER.info("客户端断开连接，清除所有替换缓存...");
+        ReplacementCache.clearCache();
+        ItemRedirector.clear();
+        Oneenoughitem.LOGGER.info("客户端缓存已清空");
     }
 }

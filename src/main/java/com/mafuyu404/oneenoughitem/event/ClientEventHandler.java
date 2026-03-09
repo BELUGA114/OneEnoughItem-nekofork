@@ -44,7 +44,21 @@ public class ClientEventHandler {
 
     private static boolean isSingleplayer() {
         Minecraft client = Minecraft.getInstance();
-        return client.getConnection() == null;
+        // 检查是否在单人游戏中
+        // getConnection() != null 表示已连接到一个世界（包括单人游戏的内置服务器）
+        if (client.getConnection() == null) {
+            // 没有连接，肯定不是单人游戏（可能在主菜单）
+            return false;
+        }
+        
+        // 检查是否是单人游戏的内置服务器
+        // 在单人游戏中，getSingleplayerServer() 会返回非 null 值
+        try {
+            return client.getSingleplayerServer() != null;
+        } catch (Exception e) {
+            // 如果调用失败，回退到检查是否为 null
+            return false;
+        }
     }
 
     private static boolean hasCtrlDown(Minecraft client) {
