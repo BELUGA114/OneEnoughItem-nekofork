@@ -29,7 +29,7 @@ public class ReplacementCache {
                 Item targetItem = Utils.getItemById(replacement.resultItems());
                 if (targetItem != null) {
                     ItemInstanceCache.put(item, targetItem);
-                    OEILog.trace("添加物品实例缓存：{} -> {}", id, replacement.resultItems());
+                    OEILog.debug("添加物品实例缓存：{} -> {}", id, replacement.resultItems());
                 }
             }
         }
@@ -76,7 +76,7 @@ public class ReplacementCache {
         }
         Item targetItem = ItemInstanceCache.get(originalItem);
         if (targetItem != null) {
-            OEILog.trace("物品实例缓存命中：{} -> {}", 
+            OEILog.debug("物品实例缓存命中：{} -> {}",
                 Utils.getItemRegistryName(originalItem), 
                 Utils.getItemRegistryName(targetItem));
         }
