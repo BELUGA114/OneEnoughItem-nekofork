@@ -188,21 +188,21 @@ public class OEILog {
     }
     
     // ==================== TRACE 级别 ====================
-    //trace方案暂时没有被使用, 因为trace级别日志太多，影响游戏性能，但是暂时保留
+    //trace 方案暂时没有被使用，因为 trace 级别日志太多，影响游戏性能，但是暂时保留
     public static void trace(Object message) {
-        if (enableTrace) {
+        if (enableTrace && LOGGER.isTraceEnabled()) {
             LOGGER.trace(formatMessage(message.toString()));
         }
     }
-
+    
     public static void trace(String message, Object... params) {
-        if (enableTrace) {
+        if (enableTrace && LOGGER.isTraceEnabled()) {
             LOGGER.trace(formatMessageWithParams(message, params));
         }
     }
-    
+        
     public static void trace(Throwable t, String message) {
-        if (enableTrace) {
+        if (enableTrace && LOGGER.isTraceEnabled()) {
             LOGGER.trace(formatMessageWithParams(message), t);
         }
     }
@@ -210,19 +210,19 @@ public class OEILog {
     // ==================== DEBUG 级别 ====================
     
     public static void debug(Object message) {
-        if (enableDebug) {
+        if (enableDebug && LOGGER.isDebugEnabled()) {
             LOGGER.debug(formatMessage(message.toString()));
         }
     }
     
     public static void debug(String message, Object... params) {
-        if (enableDebug) {
+        if (enableDebug && LOGGER.isDebugEnabled()) {
             LOGGER.debug(formatMessageWithParams(message, params));
         }
     }
     
     public static void debug(Throwable t, String message) {
-        if (enableDebug) {
+        if (enableDebug && LOGGER.isDebugEnabled()) {
             LOGGER.debug(formatMessageWithParams(message), t);
         }
     }
@@ -230,19 +230,19 @@ public class OEILog {
     // ==================== INFO 级别 ====================
     
     public static void info(Object message) {
-        if (enableInfo) {
+        if (enableInfo && LOGGER.isInfoEnabled()) {
             LOGGER.info(formatMessage(message.toString()));
         }
     }
     
     public static void info(String message, Object... params) {
-        if (enableInfo) {
+        if (enableInfo && LOGGER.isInfoEnabled()) {
             LOGGER.info(formatMessageWithParams(message, params));
         }
     }
     
     public static void info(Throwable t, String message) {
-        if (enableInfo) {
+        if (enableInfo && LOGGER.isInfoEnabled()) {
             LOGGER.info(formatMessageWithParams(message), t);
         }
     }
@@ -250,19 +250,19 @@ public class OEILog {
     // ==================== WARN 级别 ====================
     
     public static void warn(Object message) {
-        if (enableWarn) {
+        if (enableWarn && LOGGER.isWarnEnabled()) {
             LOGGER.warn(formatMessage(message.toString()));
         }
     }
     
     public static void warn(String message, Object... params) {
-        if (enableWarn) {
+        if (enableWarn && LOGGER.isWarnEnabled()) {
             LOGGER.warn(formatMessageWithParams(message, params));
         }
     }
     
     public static void warn(Throwable t, String message) {
-        if (enableWarn) {
+        if (enableWarn && LOGGER.isWarnEnabled()) {
             LOGGER.warn(formatMessageWithParams(message), t);
         }
     }
@@ -270,19 +270,19 @@ public class OEILog {
     // ==================== ERROR 级别 ====================
     
     public static void error(Object message) {
-        if (enableError) {
+        if (enableError && LOGGER.isErrorEnabled()) {
             LOGGER.error(formatMessage(message.toString()));
         }
     }
     
     public static void error(String message, Object... params) {
-        if (enableError) {
+        if (enableError && LOGGER.isErrorEnabled()) {
             LOGGER.error(formatMessageWithParams(message, params));
         }
     }
     
     public static void error(Throwable t, String message) {
-        if (enableError) {
+        if (enableError && LOGGER.isErrorEnabled()) {
             LOGGER.error(formatMessageWithParams(message), t);
         }
     }

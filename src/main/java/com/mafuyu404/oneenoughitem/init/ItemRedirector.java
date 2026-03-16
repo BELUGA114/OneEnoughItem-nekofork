@@ -76,7 +76,7 @@ public class ItemRedirector {
     
     /**
      * 查找并返回重定向后的物品
-     * 如果源物品没有重定向规则，则返回原物品
+     * 优先使用物品实例缓存（高性能），如果没有则回退到字符串 ID 查找
      * 
      * @param original 原始物品
      * @return 重定向后的物品或原物品
@@ -86,13 +86,24 @@ public class ItemRedirector {
             return original;
         }
         
-        Item redirected = redirectMap.get(original);
+        // 1. 优先检查物品实例缓存（最快）
+        Item redirected = ReplacementCache.matchItemDirect(original);
+        if (redirected != null) {
+            String sourceId = getItemId(original);
+            String targetId = getItemId(redirected);
+            OEILog.debug("物品实例缓存命中：{} -> {}", sourceId, targetId);
+            return redirected;
+        }
+        
+        // 2. 回退到旧的 redirectMap（兼容性）
+        redirected = redirectMap.get(original);
         if (redirected != null) {
             String sourceId = getItemId(original);
             String targetId = getItemId(redirected);
             OEILog.debug("物品查找触发替换：{} -> {}", sourceId, targetId);
             return redirected;
         }
+        
         return original;
     }
     

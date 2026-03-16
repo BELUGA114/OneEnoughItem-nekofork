@@ -31,6 +31,9 @@ public class ModEventHandler {
     public static void onDataReload(Class<?> dataClass, int loadedCount, int invalidCount) {
         if (dataClass == Replacements.class) {
             OEILog.info("Data reload event received for: {}", dataClass.getSimpleName());
+            // 清除旧缓存
+            Utils.clearTagCache();
+            ReplacementCache.clearCache();
             rebuildReplacementCache();
             // 初始化物品重定向器
             ItemRedirector.initialize();
@@ -116,6 +119,7 @@ public class ModEventHandler {
         OEILog.info("服务器正在停止，清除所有替换缓存...");
         ReplacementCache.clearCache();
         ItemRedirector.clear();
+        Utils.clearTagCache();
         OEILog.info("缓存已清空，准备下次加载");
     }
 }

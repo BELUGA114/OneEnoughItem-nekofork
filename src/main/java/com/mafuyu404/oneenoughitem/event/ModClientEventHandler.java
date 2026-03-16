@@ -7,6 +7,7 @@ import com.mafuyu404.oneenoughitem.client.util.ModernFixDetector;
 import com.mafuyu404.oneenoughitem.data.Replacements;
 import com.mafuyu404.oneenoughitem.init.ItemRedirector;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;
+import com.mafuyu404.oneenoughitem.init.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -118,6 +119,7 @@ public class ModClientEventHandler {
         Oneenoughitem.LOGGER.info("客户端断开连接，清除所有替换缓存...");
         ReplacementCache.clearCache();
         ItemRedirector.clear();
+        Utils.clearTagCache();
         Oneenoughitem.LOGGER.info("客户端缓存已清空");
     }
 }

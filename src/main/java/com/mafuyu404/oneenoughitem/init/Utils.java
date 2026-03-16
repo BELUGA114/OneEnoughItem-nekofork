@@ -1,6 +1,7 @@
 package com.mafuyu404.oneenoughitem.init;
 
 import com.mafuyu404.oneenoughitem.Oneenoughitem;
+import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -10,10 +11,14 @@ import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class Utils {
+    // 标签解析缓存 - 避免重复解析相同的标签
+    private static final Map<ResourceLocation, Collection<Item>> TAG_CACHE = new HashMap<>();
     public static String getItemRegistryName(Item item) {
         if (item == null) return null;
         ResourceLocation registryName = BuiltInRegistries.ITEM.getKey(item);
@@ -34,6 +39,13 @@ public class Utils {
     }
 
     public static Collection<Item> getItemsOfTag(ResourceLocation tagId, HolderLookup.RegistryLookup<Item> registryLookup) {
+        // 先检查缓存
+        Collection<Item> cached = TAG_CACHE.get(tagId);
+        if (cached != null) {
+            Oneenoughitem.LOGGER.trace("标签缓存命中：{}", tagId);
+            return cached;
+        }
+        
         TagKey<Item> tagKey = TagKey.create(Registries.ITEM, tagId);
         Collection<Item> result = new HashSet<>();
 
@@ -48,6 +60,9 @@ public class Utils {
             Oneenoughitem.LOGGER.debug("Tag {} resolved to {} items: {}",
                     tagId, result.size(),
                     result.stream().map(Utils::getItemRegistryName).toList());
+            
+            // 添加到缓存
+            TAG_CACHE.put(tagId, result);
         } else {
             Oneenoughitem.LOGGER.warn("Tag {} not found in registry lookup", tagId);
         }
@@ -58,6 +73,15 @@ public class Utils {
     public static boolean isTagExists(ResourceLocation tagId, HolderLookup.RegistryLookup<Item> registryLookup) {
         TagKey<Item> tagKey = TagKey.create(Registries.ITEM, tagId);
         return registryLookup.get(tagKey).isPresent();
+    }
+    
+    /**
+     * 清除标签缓存（在数据重载时调用）
+     */
+    public static void clearTagCache() {
+        int clearedCount = TAG_CACHE.size();
+        OEILog.info("清除标签缓存，共 {} 个条目", clearedCount);
+        TAG_CACHE.clear();
     }
 
 
