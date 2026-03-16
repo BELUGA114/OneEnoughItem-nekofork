@@ -20,10 +20,10 @@ public class Oneenoughitem implements ModInitializer {
         //OEILog.devMode();
 
         //调试模式（DEBUG + INFO + WARN + ERROR）- 日常开发
-        //OEILog.debugMode();
+        OEILog.debugMode();
 
         //普通模式（INFO + WARN + ERROR）- 发布
-        OEILog.normalMode();
+        //OEILog.normalMode();
 
         //精简模式（WARN + ERROR）- 警告和错误
         //OEILog.minimalMode();

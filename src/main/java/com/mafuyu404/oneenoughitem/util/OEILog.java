@@ -49,19 +49,15 @@ public class OEILog {
      * 格式化日志消息，添加环境和世界信息前缀
      */
     private static String formatMessage(Object message) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getEnvSide()).append(' ').append(getWorldInfo()).append(' ');
-        sb.append(message);
-        return sb.toString();
+        return getEnvSide() + ' ' + getWorldInfo() + ' ' +
+                message;
     }
     
     /**
      * 格式化带参数的日志消息（简化版，直接使用 Log4j 占位符）
      */
-    private static String formatMessageWithParams(String message, Object... params) {
-        StringBuilder prefix = new StringBuilder();
-        prefix.append(getEnvSide()).append(' ').append(getWorldInfo()).append(' ');
-        return prefix.toString() + message;
+    private static String formatMessageWithParams(String message) {
+        return getEnvSide() + ' ' + getWorldInfo() + ' ' + message;
     }
     
     // ==================== DEBUG 级别 ====================
@@ -154,29 +150,7 @@ public class OEILog {
         currentLevel = level;
         LOGGER.info("日志级别已设置为：{}", level);
     }
-    
-    /**
-     * 设置日志级别（使用字符串）
-     * @param levelName 级别名称（不区分大小写）
-     */
-    public static void setLogLevel(String levelName) {
-        try {
-            LogLevel level = LogLevel.valueOf(levelName.toUpperCase());
-            setLogLevel(level);
-        } catch (IllegalArgumentException e) {
-            warn("无效的日志级别：{}, 使用 INFO 级别", levelName);
-            setLogLevel(LogLevel.INFO);
-        }
-    }
-    
-    /**
-     * 获取当前日志级别
-     * @return 当前日志级别
-     */
-    public static LogLevel getCurrentLogLevel() {
-        return currentLevel;
-    }
-    
+
     /**
      * 获取当前日志配置信息（用于显示）
      * @return 日志配置字符串
