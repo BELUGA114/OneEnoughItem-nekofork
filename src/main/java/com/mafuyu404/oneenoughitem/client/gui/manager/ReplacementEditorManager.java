@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.client.gui.util.PathUtils;
 import com.mafuyu404.oneenoughitem.data.Replacements;
 import com.mafuyu404.oneenoughitem.init.Utils;
+import com.mafuyu404.oneenoughitem.util.OEILog;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -70,7 +70,7 @@ public class ReplacementEditorManager {
         String targetItemId = Utils.getItemRegistryName(item);
 
         if (targetItemId == null) {
-            Oneenoughitem.LOGGER.warn("removeMatchItem: Target item ID is null for item: {}", item);
+            OEILog.warn("removeMatchItem: Target item ID is null for item: {}", item);
             return false;
         }
 
@@ -169,7 +169,7 @@ public class ReplacementEditorManager {
             }
         } catch (Exception e) {
             this.showError(Component.translatable("error.oneenoughitem.object_load_error", e.getMessage()).withStyle(ChatFormatting.RED));
-            Oneenoughitem.LOGGER.error("Failed to load replacement from object", e);
+            OEILog.error("Failed to load replacement from object", e);
         }
     }
 
@@ -195,7 +195,7 @@ public class ReplacementEditorManager {
             this.showMessage(Component.translatable("message.oneenoughitem.object_element_deleted", index + 1).withStyle(ChatFormatting.GREEN));
         } catch (IOException e) {
             this.showError(Component.translatable("error.oneenoughitem.object_delete_failed", e.getMessage()).withStyle(ChatFormatting.RED));
-            Oneenoughitem.LOGGER.error("Failed to delete object element", e);
+            OEILog.error("Failed to delete object element", e);
         }
     }
 
@@ -219,7 +219,7 @@ public class ReplacementEditorManager {
                 try (FileWriter writer = new FileWriter(packMcmetaPath.toFile())) {
                     writer.write(packMcmetaContent);
                 }
-                Oneenoughitem.LOGGER.info("Created pack.mcmeta file: {}", packMcmetaPath);
+                OEILog.info("Created pack.mcmeta file: {}", packMcmetaPath);
             }
 
             Path filePath = replacementsPath.resolve(fileName + ".json");
@@ -235,11 +235,11 @@ public class ReplacementEditorManager {
             this.currentObjectIndex = -1;
 
             this.showMessage(Component.translatable("message.oneenoughitem.file_created", filePath.toString()).withStyle(ChatFormatting.GREEN));
-            Oneenoughitem.LOGGER.info("Created replacement file: {}", filePath);
+            OEILog.info("Created replacement file: {}", filePath);
 
         } catch (IOException e) {
             this.showError(Component.translatable("error.oneenoughitem.file_create_failed", e.getMessage()).withStyle(ChatFormatting.RED));
-            Oneenoughitem.LOGGER.error("Failed to create replacement file", e);
+            OEILog.error("Failed to create replacement file", e);
         }
     }
 
@@ -300,7 +300,7 @@ public class ReplacementEditorManager {
                     fileName, Component.translatable(modeKey)).withStyle(ChatFormatting.GREEN));
         } catch (Exception e) {
             this.showError(Component.translatable("error.oneenoughitem.file_select_failed", e.getMessage()).withStyle(ChatFormatting.RED));
-            Oneenoughitem.LOGGER.error("Failed to select file", e);
+            OEILog.error("Failed to select file", e);
         }
     }
 
@@ -366,7 +366,7 @@ public class ReplacementEditorManager {
                 if (itemId != null) {
                     matchItemsList.add(itemId);
                 } else {
-                    Oneenoughitem.LOGGER.warn("Could not get registry name for item: {}", item);
+                    OEILog.warn("Could not get registry name for item: {}", item);
                 }
             }
 
@@ -403,14 +403,14 @@ public class ReplacementEditorManager {
             }
 
             this.saveJsonObjectsToFile(this.currentJsonObjects);
-            Oneenoughitem.LOGGER.info("Saved replacement to file: {}", this.currentFilePath);
+            OEILog.info("Saved replacement to file: {}", this.currentFilePath);
 
         } catch (IOException e) {
             this.showError(Component.translatable("error.oneenoughitem.save_failed", e.getMessage()).withStyle(ChatFormatting.RED));
-            Oneenoughitem.LOGGER.error("Failed to save replacement", e);
+            OEILog.error("Failed to save replacement", e);
         } catch (Exception e) {
             this.showError(Component.translatable("error.oneenoughitem.unexpected_error", e.getMessage()).withStyle(ChatFormatting.RED));
-            Oneenoughitem.LOGGER.error("Unexpected error while saving replacement", e);
+            OEILog.error("Unexpected error while saving replacement", e);
         }
     }
 
@@ -434,7 +434,7 @@ public class ReplacementEditorManager {
             }
         } catch (IOException e) {
             this.showError(Component.translatable("error.oneenoughitem.file_delete_failed", e.getMessage()).withStyle(ChatFormatting.RED));
-            Oneenoughitem.LOGGER.error("Failed to delete file", e);
+            OEILog.error("Failed to delete file", e);
         }
     }
 
@@ -473,7 +473,7 @@ public class ReplacementEditorManager {
                 }
             } catch (Exception e) {
                 this.showError(Component.translatable("error.oneenoughitem.file_parse_failed", e.getMessage()).withStyle(ChatFormatting.RED));
-                Oneenoughitem.LOGGER.warn("Failed to parse existing file, creating new objects", e);
+                OEILog.warn("Failed to parse existing file, creating new objects", e);
                 existingObjects = new JsonArray();
             }
         } else {

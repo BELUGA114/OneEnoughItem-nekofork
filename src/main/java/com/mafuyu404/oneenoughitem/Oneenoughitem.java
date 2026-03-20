@@ -10,40 +10,31 @@ import org.apache.logging.log4j.Logger;
 
 public class Oneenoughitem implements ModInitializer {
     public static final String MODID = "oneenoughitem";
-    public static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger(MODID);
 
     @Override
     public void onInitialize() {
         // ============ 选择日志模式 ============
 
-        //开发模式（最详细 - TRACE + DEBUG + INFO + WARN + ERROR）
+        //开发模式（DEBUG + INFO + WARN + ERROR）
         //OEILog.devMode();
 
-        //调试模式（DEBUG + INFO + WARN + ERROR）- 日常开发
-        OEILog.debugMode();
+        //普通模式（INFO + WARN + ERROR）
+        OEILog.normalMode();
 
-        //普通模式（INFO + WARN + ERROR）- 发布
-        //OEILog.normalMode();
+        //安静模式（WARN + ERROR）
+        //OEILog.quietMode();
 
-        //精简模式（WARN + ERROR）- 警告和错误
-        //OEILog.minimalMode();
+        //禁用模式（不输出任何日志）
+        //OEILog.offMode();
 
-        //生产模式（只记录 ERROR）- 服务器或性能敏感
-        //OEILog.productionMode();
-
-        //安静模式（关闭所有日志）- 完全静默
-        //OEILog.silentMode();
-
-        OEILog.info("OneEnoughItem NekoFork initializing...");
-        OEILog.info("Environment: {}", OEILog.getEnvSide());
-        OEILog.info("Log level config: {}", OEILog.getLogLevelConfig());
+        OEILog.debug("仙人仙人");
 
         try {
             DataRegistry.register(Replacements.class);
             ModEventHandler.register();
-            OEILog.info("OneEnoughItem NekoFork initialized successfully");
         } catch (Exception e) {
-            OEILog.error(e, "Critical error during initialization!");
+            OEILog.error("Critical error during initialization!", e);
             throw new RuntimeException("Failed to initialize OneEnoughItem", e);
         }
     }

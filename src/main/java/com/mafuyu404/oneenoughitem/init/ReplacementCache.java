@@ -56,7 +56,7 @@ public class ReplacementCache {
     public static void clearCache() {
         int clearedCount = ItemMapCache.size();
         int instanceCleared = ItemInstanceCache.size();
-        OEILog.info("清除缓存，共 {} 条替换规则，{} 个物品实例映射", clearedCount, instanceCleared);
+        OEILog.debug("清除缓存，共 {} 条替换规则，{} 个物品实例映射", clearedCount, instanceCleared);
         ItemMapCache.clear();
         ItemInstanceCache.clear();
     }

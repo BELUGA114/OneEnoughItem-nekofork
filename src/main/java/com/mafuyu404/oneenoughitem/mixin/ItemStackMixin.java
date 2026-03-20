@@ -1,10 +1,10 @@
 package com.mafuyu404.oneenoughitem.mixin;
 
-import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.init.ItemRedirector;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;
 import com.mafuyu404.oneenoughitem.init.ReplacementControl;
 import com.mafuyu404.oneenoughitem.init.Utils;
+import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.world.item.Item;
@@ -65,7 +65,7 @@ public class ItemStackMixin {
             newItem = ItemRedirector.lookup(this.item);
             if (newItem != null && newItem != this.item) {
                 originItemId = Utils.getItemRegistryName(this.item);
-                Oneenoughitem.LOGGER.debug("ItemRedirector replaced: {} -> {}", 
+                OEILog.debug("ItemRedirector replaced: {} -> {}",
                         originItemId, Utils.getItemRegistryName(newItem));
             }
         }
@@ -77,7 +77,7 @@ public class ItemStackMixin {
                 newItem = Utils.getItemById(targetItemId);
                 if (newItem != null) {
                     originItemId = Utils.getItemRegistryName(this.item);
-                    Oneenoughitem.LOGGER.debug("ReplacementCache replaced: {} -> {}", originItemId, targetItemId);
+                    OEILog.debug("ReplacementCache replaced: {} -> {}", originItemId, targetItemId);
                 }
             }
         }
@@ -90,7 +90,7 @@ public class ItemStackMixin {
             this.components = PatchedDataComponentMap.fromPatch(newItem.components(), currentPatch);
             newItem.verifyComponentsAfterLoad((ItemStack) (Object) this);
 
-            Oneenoughitem.LOGGER.debug("Successfully replaced item {} with {}", 
+            OEILog.debug("Successfully replaced item {} with {}",
                     originItemId, Utils.getItemRegistryName(newItem));
         }
     }

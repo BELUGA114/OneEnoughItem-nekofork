@@ -16,8 +16,6 @@ import net.fabricmc.api.Environment;
 public class OneenoughitemClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        OEILog.info("=== OneEnoughItem Client Initializing ===");
-        OEILog.info("Client Environment: {}", OEILog.getEnvSide());
         
         try {
             ModKeyMappings.register();
@@ -29,9 +27,9 @@ public class OneenoughitemClient implements ClientModInitializer {
             ModClientEventHandler.register();
             OEILog.debug("Mod client event handler registered");
             
-            OEILog.info("=== OneEnoughItem Client Initialized Successfully ===");
+            OEILog.info("OneEnoughItem Client Initialized Successfully");
         } catch (Exception e) {
-            OEILog.error(e, "Critical error during client initialization!");
+            OEILog.error("Critical error during client initialization!", e);
             throw new RuntimeException("Failed to initialize OneEnoughItem Client", e);
         }
     }

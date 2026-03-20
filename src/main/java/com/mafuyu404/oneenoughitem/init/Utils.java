@@ -1,6 +1,5 @@
 package com.mafuyu404.oneenoughitem.init;
 
-import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -33,7 +32,7 @@ public class Utils {
             if (!BuiltInRegistries.ITEM.containsKey(resourceLocation)) return null;
             return BuiltInRegistries.ITEM.get(resourceLocation);
         } catch (Exception e) {
-            Oneenoughitem.LOGGER.debug("getItemById: Exception for {}", registryName, e);
+            OEILog.debug("getItemById: Exception for {}", registryName, e);
             return null;
         }
     }
@@ -42,14 +41,13 @@ public class Utils {
         // 先检查缓存
         Collection<Item> cached = TAG_CACHE.get(tagId);
         if (cached != null) {
-            Oneenoughitem.LOGGER.trace("标签缓存命中：{}", tagId);
             return cached;
         }
         
         TagKey<Item> tagKey = TagKey.create(Registries.ITEM, tagId);
         Collection<Item> result = new HashSet<>();
 
-        Oneenoughitem.LOGGER.debug("Attempting to resolve tag: {}", tagId);
+        OEILog.debug("Attempting to resolve tag: {}", tagId);
 
         var tagOptional = registryLookup.get(tagKey);
         if (tagOptional.isPresent()) {
@@ -57,14 +55,14 @@ public class Utils {
             for (var holder : holderSet) {
                 result.add(holder.value());
             }
-            Oneenoughitem.LOGGER.debug("Tag {} resolved to {} items: {}",
+            OEILog.debug("Tag {} resolved to {} items: {}",
                     tagId, result.size(),
                     result.stream().map(Utils::getItemRegistryName).toList());
             
             // 添加到缓存
             TAG_CACHE.put(tagId, result);
         } else {
-            Oneenoughitem.LOGGER.warn("Tag {} not found in registry lookup", tagId);
+            OEILog.warn("Tag {} not found in registry lookup", tagId);
         }
 
         return result;
@@ -79,8 +77,6 @@ public class Utils {
      * 清除标签缓存（在数据重载时调用）
      */
     public static void clearTagCache() {
-        int clearedCount = TAG_CACHE.size();
-        OEILog.info("清除标签缓存，共 {} 个条目", clearedCount);
         TAG_CACHE.clear();
     }
 
@@ -94,13 +90,13 @@ public class Utils {
             if (id.startsWith("#")) {
                 ResourceLocation tagId = ResourceLocation.tryParse(id.substring(1));
                 if (tagId == null) {
-                    Oneenoughitem.LOGGER.warn("Invalid tag ID format: {}", id);
+                    OEILog.warn("Invalid tag ID format: {}", id);
                     continue;
                 }
 
                 Collection<Item> tagItems = getItemsOfTag(tagId, registryLookup);
                 if (tagItems.isEmpty()) {
-                    Oneenoughitem.LOGGER.warn("Tag {} is empty or not found", tagId);
+                    OEILog.warn("Tag {} is empty or not found", tagId);
                 } else {
                     result.addAll(tagItems);
                 }
@@ -109,7 +105,7 @@ public class Utils {
                 if (item != null) {
                     result.add(item);
                 } else {
-                    Oneenoughitem.LOGGER.warn("Item ID not found: {}", id);
+                    OEILog.warn("Item ID not found: {}", id);
                 }
             }
         }

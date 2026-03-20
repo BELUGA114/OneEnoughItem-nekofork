@@ -30,14 +30,14 @@ public class ModEventHandler {
 
     public static void onDataReload(Class<?> dataClass, int loadedCount, int invalidCount) {
         if (dataClass == Replacements.class) {
-            OEILog.info("Data reload event received for: {}", dataClass.getSimpleName());
+            OEILog.debug("收到以下数据重新加载事件：{}", dataClass.getSimpleName());
             // 清除旧缓存
             Utils.clearTagCache();
             ReplacementCache.clearCache();
             rebuildReplacementCache();
             // 初始化物品重定向器
             ItemRedirector.initialize();
-            OEILog.info("Replacement cache rebuilt: {} entries loaded, {} invalid",
+            OEILog.debug("重建替换缓存：已加载 {} 个条目，{} 无效",
                     loadedCount, invalidCount);
         }
     }
@@ -50,7 +50,6 @@ public class ModEventHandler {
             MinecraftServer server = manager.getCurrentServer();
             if (server != null) {
                 // 服务端逻辑
-                OEILog.info("=== 服务端：开始重建替换缓存 ===");
                 HolderLookup.RegistryLookup<Item> registryLookup = server.registryAccess().lookupOrThrow(Registries.ITEM);
 
                 var replacements = manager.getDataList();
@@ -65,8 +64,6 @@ public class ModEventHandler {
 
                 OEILog.info("服务端缓存重建完成，共 {} 条规则", replacements.size());
             } else {
-                // 客户端逻辑 - 终于支持复杂替换了喵
-                OEILog.info("=== 客户端：重建替换缓存（支持复杂替换） ===");
                 var replacements = manager.getDataList();
                 int processedCount = 0;
                 int failedCount = 0;
@@ -95,17 +92,14 @@ public class ModEventHandler {
                             failedCount++;
                         }
                     } catch (Exception e) {
-                        OEILog.error(e, "客户端处理替换时出错：" + replacement);
+                        OEILog.error("客户端处理替换时出错：" + replacement, e);
                         failedCount++;
                     }
                 }
 
                 OEILog.info("客户端缓存重建完成，成功 {} 条，失败 {} 条", processedCount, failedCount);
             }
-            
-            // 输出数据来源信息，帮助调试
-            OEILog.info("数据来源：已从 DataManager 加载所有 replacements (包含内置资源和 datapacks)");
-            OEILog.info("注意：Minecraft 会自动优先加载 datapack 中的数据，后加载的会覆盖先加载的");
+
         } else {
             OEILog.error("未找到 OELib 的数据管理器");
         }
@@ -116,10 +110,8 @@ public class ModEventHandler {
      * 这样可以确保切换存档时，旧存档的配置不会影响新存档
      */
    private static void onServerStopping(MinecraftServer server) {
-        OEILog.info("服务器正在停止，清除所有替换缓存...");
         ReplacementCache.clearCache();
         ItemRedirector.clear();
         Utils.clearTagCache();
-        OEILog.info("缓存已清空，准备下次加载");
     }
 }

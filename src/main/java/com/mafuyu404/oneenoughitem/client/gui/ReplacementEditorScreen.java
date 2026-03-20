@@ -1,6 +1,5 @@
 package com.mafuyu404.oneenoughitem.client.gui;
 
-import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.client.gui.cache.EditorCache;
 import com.mafuyu404.oneenoughitem.client.gui.components.ItemDisplayWidget;
 import com.mafuyu404.oneenoughitem.client.gui.components.ScrollablePanel;
@@ -10,6 +9,7 @@ import com.mafuyu404.oneenoughitem.client.gui.util.GuiUtils;
 import com.mafuyu404.oneenoughitem.client.gui.util.PathUtils;
 import com.mafuyu404.oneenoughitem.init.ReplacementControl;
 import com.mafuyu404.oneenoughitem.init.Utils;
+import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -606,7 +606,7 @@ public class ReplacementEditorScreen extends Screen {
                 }
             }
         } catch (IOException e) {
-            Oneenoughitem.LOGGER.error("Failed to scan replacement files", e);
+            OEILog.error("无法扫描替换文件", e);
         }
         return jsonFiles;
     }

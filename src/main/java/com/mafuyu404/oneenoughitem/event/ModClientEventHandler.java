@@ -2,12 +2,12 @@ package com.mafuyu404.oneenoughitem.event;
 
 import com.mafuyu404.oelib.core.DataManager;
 import com.mafuyu404.oelib.event.Events;
-import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.client.util.ModernFixDetector;
 import com.mafuyu404.oneenoughitem.data.Replacements;
 import com.mafuyu404.oneenoughitem.init.ItemRedirector;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;
 import com.mafuyu404.oneenoughitem.init.Utils;
+import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -89,7 +89,7 @@ public class ModClientEventHandler {
                     ReplacementCache.putReplacement(replacement, registryLookup);
                 }
 
-                Oneenoughitem.LOGGER.debug("Rebuilt replacement cache with {} rules from OELib data manager",
+                OEILog.debug("使用 OELib 数据管理器中的 {} 规则重建替换缓存",
                         replacements.size());
             } else {
                 // Use BuiltInRegistries for client-side fallback - simple direct mapping
@@ -98,16 +98,14 @@ public class ModClientEventHandler {
                     var matchItems = replacement.matchItems();
                     if (matchItems.size() == 1 && !matchItems.get(0).startsWith("#")) {
                         ReplacementCache.putReplacementDirect(matchItems.get(0), replacement.resultItems());
-                    } else {
-                        Oneenoughitem.LOGGER.warn("Skipping complex replacement on client: {}", replacement);
                     }
                 }
 
-                Oneenoughitem.LOGGER.debug("Rebuilt replacement cache with {} rules using direct mapping",
+                OEILog.debug("使用直接映射通过 {} 规则重建替换缓存",
                         replacements.size());
             }
         } else {
-            Oneenoughitem.LOGGER.warn("No replacement data manager found in OELib");
+            OEILog.warn("在 OELib 中找不到替代数据管理器");
         }
     }
     
@@ -116,10 +114,9 @@ public class ModClientEventHandler {
      * 这样可以确保切换存档时，旧存档的配置不会影响新存档
      */
   private static void onPlayerDisconnect(ClientPacketListener handler, Minecraft client) {
-        Oneenoughitem.LOGGER.info("客户端断开连接，清除所有替换缓存...");
         ReplacementCache.clearCache();
         ItemRedirector.clear();
         Utils.clearTagCache();
-        Oneenoughitem.LOGGER.info("客户端缓存已清空");
+        OEILog.info("客户端缓存已清空");
     }
 }

@@ -40,8 +40,7 @@ public class ItemRedirector {
             OEILog.warn("ItemRedirector already initialized");
             return;
         }
-        
-        OEILog.info("Initializing item redirector...");
+
         
         // 从 ReplacementCache 加载映射
         Map<String, String> cacheContents = ReplacementCache.getCacheContents();
@@ -70,7 +69,7 @@ public class ItemRedirector {
         }
         
         initialized = true;
-        OEILog.info("Item redirector initialized with {} redirects (成功：{}, 失败：{})", 
+        OEILog.debug("Item redirector initialized with {} redirects (成功：{}, 失败：{})",
                 redirectMap.size(), successCount, failCount);
     }
     
@@ -126,11 +125,8 @@ public class ItemRedirector {
      * 清除所有重定向规则
      */
     public static void clear() {
-        int clearedCount = redirectMap.size();
-        OEILog.info("清除 {} 个物品替换规则", clearedCount);
         redirectMap.clear();
         initialized = false;
-        OEILog.info("Item redirector cleared");
     }
     
     /**

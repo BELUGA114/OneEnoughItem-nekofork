@@ -1,6 +1,5 @@
 package com.mafuyu404.oneenoughitem.client.gui.cache;
 
-import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -43,7 +42,7 @@ public class EditorCache {
             return Paths.get("config", "oneenoughitem_" + CACHE_FILENAME);
             
         } catch (Exception e) {
-            OEILog.error(e, "Failed to determine cache path, using default");
+            OEILog.error("Failed to determine cache path, using default", e);
             return Paths.get("config", "oneenoughitem_" + CACHE_FILENAME);
         }
     }
@@ -89,7 +88,7 @@ public class EditorCache {
             OEILog.info("Editor cache saved to: {}", cacheFile);
 
         } catch (IOException e) {
-            Oneenoughitem.LOGGER.error("Failed to save editor cache", e);
+            OEILog.error("Failed to save editor cache", e);
         }
     }
 
@@ -125,7 +124,7 @@ public class EditorCache {
             return new CacheData(matchItems, matchTags, resultItem, resultTag, fileName);
 
         } catch (IOException e) {
-            OEILog.error(e, "Failed to load editor cache from: " + cacheFile);
+            OEILog.error("Failed to load editor cache from: " + cacheFile, e);
             return null;
         }
     }
@@ -153,7 +152,7 @@ public class EditorCache {
                 OEILog.debug("Cache file does not exist, nothing to clear: {}", cacheFile);
             }
         } catch (IOException e) {
-            OEILog.error(e, "Failed to clear editor cache from: " + cacheFile);
+            OEILog.error("Failed to clear editor cache from: " + cacheFile, e);
         }
     }
 }

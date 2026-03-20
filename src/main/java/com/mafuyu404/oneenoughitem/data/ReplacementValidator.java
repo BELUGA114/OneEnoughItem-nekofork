@@ -1,8 +1,8 @@
 package com.mafuyu404.oneenoughitem.data;
 
 import com.mafuyu404.oelib.api.DataValidator;
-import com.mafuyu404.oneenoughitem.Oneenoughitem;
 import com.mafuyu404.oneenoughitem.init.Utils;
+import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +20,7 @@ public class ReplacementValidator implements DataValidator.ServerContextAware<Re
 
         // 如果没有服务器上下文，只能进行基础验证
         if (server == null) {
-            Oneenoughitem.LOGGER.debug("No server context available for validation of {}, performing basic validation only", source);
+            OEILog.debug("No server context available for validation of {}, performing basic validation only", source);
             return ValidationResult.success();
         }
 
@@ -42,15 +42,15 @@ public class ReplacementValidator implements DataValidator.ServerContextAware<Re
                     if (!tagItems.isEmpty()) {
                         hasValidSource = true;
                         validSourceCount += tagItems.size();
-                        Oneenoughitem.LOGGER.debug("Valid tag in {}: '{}' contains {} items",
+                        OEILog.debug("Valid tag in {}: '{}' contains {} items",
                                 source, matchItem, tagItems.size());
                     }
                     }else {
-                        Oneenoughitem.LOGGER.warn("Tag in {} is empty: '{}'",
+                        OEILog.warn("Tag in {} is empty: '{}'",
                                 source, matchItem);
                     }
                 } catch (Exception e) {
-                    Oneenoughitem.LOGGER.error("Invalid tag format in {}: '{}'",
+                    OEILog.error("Invalid tag format in {}: '{}'",
                             source, matchItem, e);
                 }
             } else {
@@ -59,7 +59,7 @@ public class ReplacementValidator implements DataValidator.ServerContextAware<Re
                     hasValidSource = true;
                     validSourceCount++;
                 } else {
-                    Oneenoughitem.LOGGER.warn("Invalid source item in {}: '{}' does not exist",
+                    OEILog.warn("Invalid source item in {}: '{}' does not exist",
                             source, matchItem);
                 }
             }
@@ -69,7 +69,7 @@ public class ReplacementValidator implements DataValidator.ServerContextAware<Re
             return ValidationResult.failure("No valid source items found for target '" + replacement.resultItems() + "'");
         }
 
-        Oneenoughitem.LOGGER.debug("Replacement in {} validated: {} source items -> {}",
+        OEILog.debug("Replacement in {} validated: {} source items -> {}",
                 source, validSourceCount, replacement.resultItems());
 
         return ValidationResult.success();
