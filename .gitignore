@@ -1,28 +1,14 @@
-# User-specific stuff
-.idea/
+# ===== 环境变量与密钥 =====
+.env
+.env.local
+.env.*.local
+!.env.example
 
-*.iml
-*.ipr
-*.iws
-
-# IntelliJ
-out/
-# mpeltonen/sbt-idea plugin
-.idea_modules/
-
-# JIRA plugin
-atlassian-ide-plugin.xml
-
-# Compiled class file
+# ===== Java 编译产物 =====
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
 *.ctxt
 
-# Package Files #
+# ===== 打包文件 =====
 *.jar
 *.war
 *.nar
@@ -31,35 +17,48 @@ atlassian-ide-plugin.xml
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# ===== 日志与崩溃报告 =====
+*.log
 hs_err_pid*
 
+# ===== Gradle =====
+.gradle/
+build/
+**/build/
+gradle-app.setting
+.gradletasknamecache
+run/
+runs/
+!gradle-wrapper.jar
+
+# ===== IntelliJ IDEA =====
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+.idea_modules/
+
+# ===== 插件配置 =====
+atlassian-ide-plugin.xml
+
+# ===== Claude =====
+CLAUDE.md
+
+# ===== 临时文件 =====
+*.tmp
+*.bak
+*.swp
+*.swo
 *~
 
-# temporary files which can be created if a process still has a handle open of a deleted file
-.fuse_hidden*
-
-# KDE directory preferences
-.directory
-
-# Linux trash folder which might appear on any partition or disk
-.Trash-*
-
-# .nfs files are created when an open file is removed but is still being accessed
-.nfs*
-
-# General
+# ===== macOS =====
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Icon must end with two \r
-Icon
-
-# Thumbnails
+.AppleDB
+.AppleDesktop
 ._*
-
-# Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd
 .Spotlight-V100
@@ -67,53 +66,27 @@ Icon
 .Trashes
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
 Network Trash Folder
 Temporary Items
 .apdisk
 
-# Windows thumbnail cache files
+# ===== Windows =====
 Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
 ehthumbs_vista.db
-
-# Dump file
 *.stackdump
-
-# Folder config file
 [Dd]esktop.ini
-
-# Recycle Bin used on file shares
 $RECYCLE.BIN/
-
-# Windows Installer files
 *.cab
 *.msi
 *.msix
 *.msm
 *.msp
-
-# Windows shortcuts
 *.lnk
 
-.gradle
-build/
-
-# Ignore Gradle GUI config
-gradle-app.setting
-
-# Cache of project
-.gradletasknamecache
-
-**/build/
-
-# Common working directory
-run/
-runs/
-
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+# ===== Linux =====
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
