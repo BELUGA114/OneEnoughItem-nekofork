@@ -9,7 +9,6 @@ import com.mafuyu404.oneenoughitem.client.gui.components.ScrollablePanel;
 import com.mafuyu404.oneenoughitem.client.gui.components.TagDisplayWidget;
 import com.mafuyu404.oneenoughitem.client.gui.manager.ReplacementEditorManager;
 import com.mafuyu404.oneenoughitem.client.gui.util.GuiUtils;
-import com.mafuyu404.oneenoughitem.client.gui.util.PathUtils;
 import com.mafuyu404.oneenoughitem.init.ReplacementControl;
 import com.mafuyu404.oneenoughitem.init.Utils;
 import net.minecraft.ChatFormatting;
@@ -25,12 +24,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class ReplacementEditorScreen extends Screen {
     private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
