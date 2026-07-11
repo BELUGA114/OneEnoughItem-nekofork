@@ -139,8 +139,6 @@ public class ReplacementEditorManager {
                 clearMatchItems();
                 clearResultItem();
 
-                Set<String> processedItems = new LinkedHashSet<>();
-
                 for (String matchItem : replacement.matchItems()) {
 
                     if (matchItem.startsWith("#")) {
@@ -307,32 +305,6 @@ public class ReplacementEditorManager {
         }
     }
 
-
-    public String getObjectElementDescription(int index) {
-        if (this.currentJsonObjects == null || index < 0 || index >= this.currentJsonObjects.size()) {
-            return Component.translatable("description.oneenoughitem.invalid").getString();
-        }
-
-        try {
-            JsonElement element = this.currentJsonObjects.get(index);
-            var result = Replacements.CODEC.parse(JsonOps.INSTANCE, element);
-
-            if (result.result().isPresent()) {
-                Replacements replacement = result.result().get();
-
-                int matchCount = replacement.matchItems().size();
-                String resultType = replacement.resultItems().startsWith("#") ?
-                        Component.translatable("description.oneenoughitem.tag").getString() :
-                        Component.translatable("description.oneenoughitem.item").getString();
-
-                return Component.translatable("description.oneenoughitem.items_to_type", matchCount, resultType).getString();
-            } else {
-                return Component.translatable("description.oneenoughitem.parse_failed").getString();
-            }
-        } catch (Exception e) {
-            return Component.translatable("description.oneenoughitem.error").getString();
-        }
-    }
 
     public void setCurrentFileName(String fileName) {
         this.currentFileName = fileName != null ? fileName : "";

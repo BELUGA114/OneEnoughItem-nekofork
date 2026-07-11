@@ -32,7 +32,6 @@ public class ReplacementValidator implements DataValidator.ServerContextAware<Re
 
         // 验证是否至少有一个有效的源物品
         boolean hasValidSource = false;
-        int validSourceCount = 0;
 
         for (String matchItem : replacement.matchItems()) {
             if (matchItem.startsWith("#")) {
@@ -44,7 +43,6 @@ public class ReplacementValidator implements DataValidator.ServerContextAware<Re
                     var tagItems = Utils.getItemsOfTag(tagId, registryLookup);
                     if (!tagItems.isEmpty()) {
                         hasValidSource = true;
-                        validSourceCount += tagItems.size();
                     }
                     }else {
                         LOGGER.warn("Tag in {} is empty: '{}'",
@@ -58,7 +56,6 @@ public class ReplacementValidator implements DataValidator.ServerContextAware<Re
                 // 处理普通物品
                 if (Utils.getItemById(matchItem) != null) {
                     hasValidSource = true;
-                    validSourceCount++;
                 } else {
                     LOGGER.warn("Invalid source item in {}: '{}' does not exist",
                             source, matchItem);

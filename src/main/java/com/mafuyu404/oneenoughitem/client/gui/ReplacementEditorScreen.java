@@ -597,23 +597,6 @@ public class ReplacementEditorScreen extends Screen {
         }
     }
 
-    public List<Path> scanReplacementFiles() {
-        List<Path> jsonFiles = new ArrayList<>();
-        try {
-            Path replacementsPath = PathUtils.getReplacementsPath();
-            if (Files.exists(replacementsPath)) {
-                try (Stream<Path> paths = Files.walk(replacementsPath)) {
-                    paths.filter(Files::isRegularFile)
-                            .filter(path -> path.toString().toLowerCase().endsWith(".json"))
-                            .forEach(jsonFiles::add);
-                }
-            }
-        } catch (IOException e) {
-            LOGGER.error("无法扫描替换文件", e);
-        }
-        return jsonFiles;
-    }
-
     @Override
     public boolean isPauseScreen() {
         return false;

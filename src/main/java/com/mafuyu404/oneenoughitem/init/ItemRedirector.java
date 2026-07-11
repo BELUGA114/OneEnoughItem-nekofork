@@ -7,7 +7,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import org.jetbrains.annotations.ApiStatus;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -110,21 +109,6 @@ public class ItemRedirector {
     }
     
     /**
-     * 直接添加重定向规则（不通过缓存）
-     * 
-     * @param sourceItem 源物品
-     * @param targetItem 目标物品
-     */
-    public static void addRedirect(Item sourceItem, Item targetItem) {
-        if (sourceItem != null && targetItem != null) {
-            String sourceId = getItemId(sourceItem);
-            String targetId = getItemId(targetItem);
-            redirectMap.put(sourceItem, targetItem);
-            LOGGER.debug("添加物品替换：{} -> {}", sourceId, targetId);
-        }
-    }
-    
-    /**
      * 清除所有重定向规则
      */
     public static void clear() {
@@ -143,15 +127,6 @@ public class ItemRedirector {
      * 获取物品的注册表 ID
      */
     private static String getItemId(Item item) {
-        ResourceLocation loc = BuiltInRegistries.ITEM.getKey(item);
-        return loc != null ? loc.toString() : "unknown";
-    }
-    
-    /**
-     * 内部方法：获取重定向映射（仅供内部使用）
-     */
-    @ApiStatus.Internal
-    public static Map<Item, Item> getRedirectMap() {
-        return redirectMap;
+        return BuiltInRegistries.ITEM.getKey(item).toString();
     }
 }
