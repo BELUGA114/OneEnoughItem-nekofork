@@ -1,6 +1,8 @@
 package com.mafuyu404.oneenoughitem.client.util;
 
-import com.mafuyu404.oneenoughitem.util.OEILog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 
@@ -10,6 +12,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class ModernFixDetector {
+    private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
     private static final String MODERNFIX_MODID = "modernfix";
     private static final String CONFIG_FILE_NAME = "modernfix-mixins.properties";
     private static final String TARGET_CONFIG_KEY = "mixin.perf.faster_ingredients";
@@ -18,16 +21,16 @@ public class ModernFixDetector {
 
     public static boolean isModernFixInstalled() {
         boolean installed = FabricLoader.getInstance().isModLoaded(MODERNFIX_MODID);
-        OEILog.debug("ModernFix installed: {}", installed);
+        LOGGER.debug("ModernFix installed: {}", installed);
         return installed;
     }
 
     public static boolean isFasterIngredientsEnabled() {
         Path configPath = getConfigPath();
-        OEILog.debug("Checking ModernFix config at: {}", configPath);
+        LOGGER.debug("Checking ModernFix config at: {}", configPath);
 
         if (!Files.exists(configPath)) {
-            OEILog.warn("ModernFix config file not found: {}", configPath);
+            LOGGER.warn("ModernFix config file not found: {}", configPath);
             return false;
         }
 
@@ -37,13 +40,13 @@ public class ModernFixDetector {
                 String trimmed = line.trim();
                 // 只要包含配置项并设置为 true，不管是否被注释
                 if (trimmed.matches("^#?\\s*" + TARGET_CONFIG_KEY + "\\s*=\\s*true.*")) {
-                    OEILog.debug("ModernFix fast_ingredients 似乎已启用（即使在评论中）：{}", trimmed);
+                    LOGGER.debug("ModernFix fast_ingredients 似乎已启用（即使在评论中）：{}", trimmed);
                     return true;
                 }
             }
-            OEILog.debug("ModernFix fast_ingredients 选项未找到或未启用.");
+            LOGGER.debug("ModernFix fast_ingredients 选项未找到或未启用.");
         } catch (IOException e) {
-            OEILog.error("Failed to read ModernFix config file", e);
+            LOGGER.error("Failed to read ModernFix config file", e);
         }
 
         return false;
@@ -57,12 +60,12 @@ public class ModernFixDetector {
 
     public static boolean shouldShowWarning() {
         boolean should = !hasShownWarning && isModernFixInstalled() && isFasterIngredientsEnabled();
-        OEILog.debug("Should show warning: {}", should);
+        LOGGER.debug("Should show warning: {}", should);
         return should;
     }
 
     public static void markWarningShown() {
         hasShownWarning = true;
-        OEILog.debug("Marked ModernFix warning as shown.");
+        LOGGER.debug("Marked ModernFix warning as shown.");
     }
 }

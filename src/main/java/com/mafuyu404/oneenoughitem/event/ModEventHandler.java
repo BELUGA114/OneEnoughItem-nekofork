@@ -1,5 +1,8 @@
 package com.mafuyu404.oneenoughitem.event;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mafuyu404.oelib.core.DataManager;
 import com.mafuyu404.oelib.event.DataReloadEvent;
 import com.mafuyu404.oelib.event.Events;
@@ -7,7 +10,6 @@ import com.mafuyu404.oneenoughitem.data.Replacements;
 import com.mafuyu404.oneenoughitem.init.ItemRedirector;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;
 import com.mafuyu404.oneenoughitem.init.Utils;
-import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,9 +17,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.Item;
 
-import java.util.List;
-
 public class ModEventHandler {
+    private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
 
     public static void register() {
         Events.on(DataReloadEvent.EVENT)
@@ -30,79 +31,41 @@ public class ModEventHandler {
 
     public static void onDataReload(Class<?> dataClass, int loadedCount, int invalidCount) {
         if (dataClass == Replacements.class) {
-            OEILog.debug("收到以下数据重新加载事件：{}", dataClass.getSimpleName());
+            LOGGER.debug("收到以下数据重新加载事件：{}", dataClass.getSimpleName());
             // 清除旧缓存
             Utils.clearTagCache();
             ReplacementCache.clearCache();
             rebuildReplacementCache();
             // 初始化物品重定向器
             ItemRedirector.initialize();
-            OEILog.debug("重建替换缓存：已加载 {} 个条目，{} 无效",
+            LOGGER.debug("重建替换缓存：已加载 {} 个条目，{} 无效",
                     loadedCount, invalidCount);
         }
     }
 
     private static void rebuildReplacementCache() {
         DataManager<Replacements> manager = DataManager.get(Replacements.class);
-        if (manager != null) {
-            ReplacementCache.clearCache();
-
-            MinecraftServer server = manager.getCurrentServer();
-            if (server != null) {
-                // 服务端逻辑
-                HolderLookup.RegistryLookup<Item> registryLookup = server.registryAccess().lookupOrThrow(Registries.ITEM);
-
-                var replacements = manager.getDataList();
-                int ruleCount = 0;
-                for (Replacements replacement : replacements) {
-                    OEILog.info("处理替换规则 #{}: {} -> {}", 
-                            ++ruleCount, 
-                            replacement.matchItems(), 
-                            replacement.resultItems());
-                    ReplacementCache.putReplacement(replacement, registryLookup);
-                }
-
-                OEILog.info("服务端缓存重建完成，共 {} 条规则", replacements.size());
-            } else {
-                var replacements = manager.getDataList();
-                int processedCount = 0;
-                int failedCount = 0;
-                
-                // 使用 BuiltInRegistries 进行简单的 registry lookup
-                HolderLookup.RegistryLookup<Item> clientRegistryLookup = BuiltInRegistries.ITEM.asLookup();
-                
-                for (Replacements replacement : replacements) {
-                    try {
-                        // 尝试解析所有匹配物品（包括标签和多物品）
-                        List<Item> resolvedItems = Utils.resolveItemList(replacement.matchItems(), clientRegistryLookup);
-                        
-                        if (!resolvedItems.isEmpty()) {
-                            // 成功解析，添加到缓存
-                            for (Item item : resolvedItems) {
-                                String itemId = Utils.getItemRegistryName(item);
-                                if (itemId != null) {
-                                    ReplacementCache.putReplacementDirect(itemId, replacement.resultItems());
-                                    processedCount++;
-                                }
-                            }
-                            OEILog.debug("客户端处理替换：{} -> {} (共 {} 个物品)", 
-                                    replacement.matchItems(), replacement.resultItems(), resolvedItems.size());
-                        } else {
-                            OEILog.warn("客户端无法解析替换规则：{} (物品或标签不存在)", replacement.matchItems());
-                            failedCount++;
-                        }
-                    } catch (Exception e) {
-                        OEILog.error("客户端处理替换时出错：" + replacement, e);
-                        failedCount++;
-                    }
-                }
-
-                OEILog.info("客户端缓存重建完成，成功 {} 条，失败 {} 条", processedCount, failedCount);
-            }
-
-        } else {
-            OEILog.error("未找到 OELib 的数据管理器");
+        if (manager == null) {
+            LOGGER.error("未找到 OELib 的数据管理器");
+            return;
         }
+
+        Utils.clearTagCache();
+        int count;
+
+        MinecraftServer server = manager.getCurrentServer();
+        if (server != null) {
+            HolderLookup.RegistryLookup<Item> registryLookup = server.registryAccess().lookupOrThrow(Registries.ITEM);
+            count = ReplacementCache.rebuildFromManager(manager, registryLookup);
+            LOGGER.info("服务端缓存重建完成，共 {} 条规则", count);
+        } else {
+            HolderLookup.RegistryLookup<Item> clientRegistryLookup = BuiltInRegistries.ITEM.asLookup();
+            count = ReplacementCache.rebuildFromManager(manager, clientRegistryLookup);
+            LOGGER.info("客户端缓存重建完成（通过 ModEventHandler），共 {} 条规则", count);
+        }
+
+        ItemRedirector.initialize();
+        LOGGER.debug("重建替换缓存完成，ItemRedirector 已同步");
     }
     
     /**

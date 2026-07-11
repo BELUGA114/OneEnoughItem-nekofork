@@ -1,14 +1,14 @@
-# ===== 环境变量与密钥 =====
+# 环境变量与密钥
 .env
 .env.local
 .env.*.local
 !.env.example
 
-# ===== Java 编译产物 =====
+# Java 编译产物
 *.class
 *.ctxt
 
-# ===== 打包文件 =====
+# 打包文件
 *.jar
 *.war
 *.nar
@@ -17,11 +17,11 @@
 *.tar.gz
 *.rar
 
-# ===== 日志与崩溃报告 =====
+# 日志与崩溃报告
 *.log
 hs_err_pid*
 
-# ===== Gradle =====
+# Gradle
 .gradle/
 build/
 **/build/
@@ -31,7 +31,7 @@ run/
 runs/
 !gradle-wrapper.jar
 
-# ===== IntelliJ IDEA =====
+# IntelliJ IDEA
 .idea/
 *.iml
 *.ipr
@@ -39,20 +39,22 @@ runs/
 out/
 .idea_modules/
 
-# ===== 插件配置 =====
+# 插件配置
 atlassian-ide-plugin.xml
 
-# ===== Claude =====
-CLAUDE.md
+# Claude
+.claude/
+claude.md
+docs/
 
-# ===== 临时文件 =====
+# 临时文件
 *.tmp
 *.bak
 *.swp
 *.swo
 *~
 
-# ===== macOS =====
+# macOS
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -70,7 +72,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# ===== Windows =====
+# Windows
 Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
@@ -85,7 +87,7 @@ $RECYCLE.BIN/
 *.msp
 *.lnk
 
-# ===== Linux =====
+# Linux
 .fuse_hidden*
 .directory
 .Trash-*

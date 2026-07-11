@@ -1,10 +1,12 @@
 package com.mafuyu404.oneenoughitem.mixin;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mafuyu404.oneenoughitem.init.ItemRedirector;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;
 import com.mafuyu404.oneenoughitem.init.ReplacementControl;
 import com.mafuyu404.oneenoughitem.init.Utils;
-import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.world.item.Item;
@@ -21,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ItemStack.class)
 public class ItemStackMixin {
+    private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
     @Mutable
     @Shadow
     @Final
@@ -65,7 +68,7 @@ public class ItemStackMixin {
             newItem = ItemRedirector.lookup(this.item);
             if (newItem != null && newItem != this.item) {
                 originItemId = Utils.getItemRegistryName(this.item);
-                OEILog.debug("ItemRedirector replaced: {} -> {}",
+                LOGGER.debug("ItemRedirector replaced: {} -> {}",
                         originItemId, Utils.getItemRegistryName(newItem));
             }
         }
@@ -77,7 +80,7 @@ public class ItemStackMixin {
                 newItem = Utils.getItemById(targetItemId);
                 if (newItem != null) {
                     originItemId = Utils.getItemRegistryName(this.item);
-                    OEILog.debug("ReplacementCache replaced: {} -> {}", originItemId, targetItemId);
+                    LOGGER.debug("ReplacementCache replaced: {} -> {}", originItemId, targetItemId);
                 }
             }
         }
@@ -90,7 +93,7 @@ public class ItemStackMixin {
             this.components = PatchedDataComponentMap.fromPatch(newItem.components(), currentPatch);
             newItem.verifyComponentsAfterLoad((ItemStack) (Object) this);
 
-            OEILog.debug("Successfully replaced item {} with {}",
+            LOGGER.debug("Successfully replaced item {} with {}",
                     originItemId, Utils.getItemRegistryName(newItem));
         }
     }

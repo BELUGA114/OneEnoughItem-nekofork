@@ -1,6 +1,8 @@
 package com.mafuyu404.oneenoughitem.init;
 
-import com.mafuyu404.oneenoughitem.util.OEILog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Utils {
+    private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
     // 标签解析缓存 - 避免重复解析相同的标签
     private static final Map<ResourceLocation, Collection<Item>> TAG_CACHE = new HashMap<>();
     public static String getItemRegistryName(Item item) {
@@ -32,7 +35,7 @@ public class Utils {
             if (!BuiltInRegistries.ITEM.containsKey(resourceLocation)) return null;
             return BuiltInRegistries.ITEM.get(resourceLocation);
         } catch (Exception e) {
-            OEILog.debug("getItemById: Exception for {}", registryName, e);
+            LOGGER.warn("getItemById: Failed to resolve item ID '{}'", registryName, e);
             return null;
         }
     }
@@ -47,7 +50,7 @@ public class Utils {
         TagKey<Item> tagKey = TagKey.create(Registries.ITEM, tagId);
         Collection<Item> result = new HashSet<>();
 
-        OEILog.debug("Attempting to resolve tag: {}", tagId);
+        LOGGER.debug("Attempting to resolve tag: {}", tagId);
 
         var tagOptional = registryLookup.get(tagKey);
         if (tagOptional.isPresent()) {
@@ -55,14 +58,14 @@ public class Utils {
             for (var holder : holderSet) {
                 result.add(holder.value());
             }
-            OEILog.debug("Tag {} resolved to {} items: {}",
+            LOGGER.debug("Tag {} resolved to {} items: {}",
                     tagId, result.size(),
                     result.stream().map(Utils::getItemRegistryName).toList());
             
             // 添加到缓存
             TAG_CACHE.put(tagId, result);
         } else {
-            OEILog.warn("Tag {} not found in registry lookup", tagId);
+            LOGGER.warn("Tag {} not found in registry lookup", tagId);
         }
 
         return result;
@@ -90,13 +93,13 @@ public class Utils {
             if (id.startsWith("#")) {
                 ResourceLocation tagId = ResourceLocation.tryParse(id.substring(1));
                 if (tagId == null) {
-                    OEILog.warn("Invalid tag ID format: {}", id);
+                    LOGGER.warn("Invalid tag ID format: {}", id);
                     continue;
                 }
 
                 Collection<Item> tagItems = getItemsOfTag(tagId, registryLookup);
                 if (tagItems.isEmpty()) {
-                    OEILog.warn("Tag {} is empty or not found", tagId);
+                    LOGGER.warn("Tag {} is empty or not found", tagId);
                 } else {
                     result.addAll(tagItems);
                 }
@@ -105,7 +108,7 @@ public class Utils {
                 if (item != null) {
                     result.add(item);
                 } else {
-                    OEILog.warn("Item ID not found: {}", id);
+                    LOGGER.warn("Item ID not found: {}", id);
                 }
             }
         }

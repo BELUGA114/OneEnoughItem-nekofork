@@ -1,8 +1,10 @@
 package com.mafuyu404.oneenoughitem.event;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mafuyu404.oneenoughitem.client.ModKeyMappings;
 import com.mafuyu404.oneenoughitem.client.gui.ReplacementEditorScreen;
-import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -17,18 +19,19 @@ import org.lwjgl.glfw.GLFW;
  */
 @Environment(EnvType.CLIENT)
 public class ClientEventHandler {
+    private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
 
     public static void register() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (ModKeyMappings.OPEN_EDITOR.consumeClick()) {
                 if (client.screen == null && hasCtrlDown(client)) {
                     if (isSingleplayer()) {
-                        OEILog.debug("Opening GUI in singleplayer mode");
+                        LOGGER.debug("Opening GUI in singleplayer mode");
                         client.setScreen(new ReplacementEditorScreen());
                     } else {
                         // 在服务器中禁用 GUI，显示提示消息
                         if (client.player != null) {
-                            OEILog.warn("GUI access blocked in multiplayer mode");
+                            LOGGER.warn("GUI access blocked in multiplayer mode");
                             client.player.displayClientMessage(
                                 Component.translatable(
                                     "message.oneenoughitem.gui_disabled_in_server"
@@ -56,7 +59,8 @@ public class ClientEventHandler {
         try {
             return client.getSingleplayerServer() != null;
         } catch (Exception e) {
-            // 如果调用失败，回退到检查是否为 null
+            // getSingleplayerServer() 在非单人环境下可能抛出异常，回退到返回 false
+            LOGGER.warn("Failed to check singleplayer status, assuming multiplayer", e);
             return false;
         }
     }

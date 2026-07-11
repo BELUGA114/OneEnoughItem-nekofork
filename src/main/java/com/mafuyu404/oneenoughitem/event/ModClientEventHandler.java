@@ -1,5 +1,8 @@
 package com.mafuyu404.oneenoughitem.event;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mafuyu404.oelib.core.DataManager;
 import com.mafuyu404.oelib.event.Events;
 import com.mafuyu404.oneenoughitem.client.util.ModernFixDetector;
@@ -7,7 +10,6 @@ import com.mafuyu404.oneenoughitem.data.Replacements;
 import com.mafuyu404.oneenoughitem.init.ItemRedirector;
 import com.mafuyu404.oneenoughitem.init.ReplacementCache;
 import com.mafuyu404.oneenoughitem.init.Utils;
-import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -17,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -31,6 +34,7 @@ import net.minecraft.world.item.Item;
  */
 @Environment(EnvType.CLIENT)
 public class ModClientEventHandler {
+    private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
 
     public static void register() {
         Events.on(ClientPlayConnectionEvents.JOIN)
@@ -77,36 +81,25 @@ public class ModClientEventHandler {
 
     private static void rebuildReplacementCache() {
         DataManager<Replacements> manager = DataManager.get(Replacements.class);
-        if (manager != null) {
-            ReplacementCache.clearCache();
-
-            MinecraftServer server = manager.getCurrentServer();
-            if (server != null) {
-                HolderLookup.RegistryLookup<Item> registryLookup = server.registryAccess().lookupOrThrow(Registries.ITEM);
-
-                var replacements = manager.getDataList();
-                for (Replacements replacement : replacements) {
-                    ReplacementCache.putReplacement(replacement, registryLookup);
-                }
-
-                OEILog.debug("使用 OELib 数据管理器中的 {} 规则重建替换缓存",
-                        replacements.size());
-            } else {
-                // Use BuiltInRegistries for client-side fallback - simple direct mapping
-                var replacements = manager.getDataList();
-                for (Replacements replacement : replacements) {
-                    var matchItems = replacement.matchItems();
-                    if (matchItems.size() == 1 && !matchItems.get(0).startsWith("#")) {
-                        ReplacementCache.putReplacementDirect(matchItems.get(0), replacement.resultItems());
-                    }
-                }
-
-                OEILog.debug("使用直接映射通过 {} 规则重建替换缓存",
-                        replacements.size());
-            }
-        } else {
-            OEILog.warn("在 OELib 中找不到替代数据管理器");
+        if (manager == null) {
+            LOGGER.warn("在 OELib 中找不到替代数据管理器");
+            return;
         }
+
+        ReplacementCache.clearCache();
+        Utils.clearTagCache();
+
+        MinecraftServer server = manager.getCurrentServer();
+        if (server != null) {
+            HolderLookup.RegistryLookup<Item> registryLookup = server.registryAccess().lookupOrThrow(Registries.ITEM);
+            ReplacementCache.rebuildFromManager(manager, registryLookup);
+        } else {
+            HolderLookup.RegistryLookup<Item> clientRegistryLookup = BuiltInRegistries.ITEM.asLookup();
+            ReplacementCache.rebuildFromManager(manager, clientRegistryLookup);
+        }
+
+        ItemRedirector.initialize();
+        LOGGER.debug("客户端缓存重建完成，ItemRedirector 已同步");
     }
     
     /**
@@ -117,6 +110,6 @@ public class ModClientEventHandler {
         ReplacementCache.clearCache();
         ItemRedirector.clear();
         Utils.clearTagCache();
-        OEILog.info("客户端缓存已清空");
+        LOGGER.info("客户端缓存已清空");
     }
 }

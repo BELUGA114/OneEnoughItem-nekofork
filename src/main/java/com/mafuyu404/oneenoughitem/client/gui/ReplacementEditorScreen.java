@@ -1,5 +1,8 @@
 package com.mafuyu404.oneenoughitem.client.gui;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mafuyu404.oneenoughitem.client.gui.cache.EditorCache;
 import com.mafuyu404.oneenoughitem.client.gui.components.ItemDisplayWidget;
 import com.mafuyu404.oneenoughitem.client.gui.components.ScrollablePanel;
@@ -9,7 +12,6 @@ import com.mafuyu404.oneenoughitem.client.gui.util.GuiUtils;
 import com.mafuyu404.oneenoughitem.client.gui.util.PathUtils;
 import com.mafuyu404.oneenoughitem.init.ReplacementControl;
 import com.mafuyu404.oneenoughitem.init.Utils;
-import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class ReplacementEditorScreen extends Screen {
+    private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
     private static final int PANEL_WIDTH = 220;
     private static final int PANEL_HEIGHT = 140;
     private static final int BUTTON_WIDTH = 70;
@@ -606,7 +609,7 @@ public class ReplacementEditorScreen extends Screen {
                 }
             }
         } catch (IOException e) {
-            OEILog.error("无法扫描替换文件", e);
+            LOGGER.error("无法扫描替换文件", e);
         }
         return jsonFiles;
     }

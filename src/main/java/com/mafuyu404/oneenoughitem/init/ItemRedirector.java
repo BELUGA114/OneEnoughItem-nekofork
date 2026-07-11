@@ -1,6 +1,8 @@
 package com.mafuyu404.oneenoughitem.init;
 
-import com.mafuyu404.oneenoughitem.util.OEILog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -19,6 +21,7 @@ import java.util.Map;
  * 3. 在所有获取物品的地方，通过 lookup 方法返回目标物品
  */
 public class ItemRedirector {
+    private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
     
     /*
      * 存储物品重定向映射：源物品 -> 目标物品
@@ -37,7 +40,7 @@ public class ItemRedirector {
      */
     public static void initialize() {
         if (initialized) {
-            OEILog.warn("ItemRedirector already initialized");
+            LOGGER.warn("ItemRedirector already initialized");
             return;
         }
 
@@ -60,16 +63,16 @@ public class ItemRedirector {
             
             if (sourceItem != Items.AIR && targetItem != Items.AIR) {       //过滤掉无效的物品 ID
                 redirectMap.put(sourceItem, targetItem);
-                OEILog.info("物品替换：{} -> {}", sourceId, targetId);
+                LOGGER.info("物品替换：{} -> {}", sourceId, targetId);
                 successCount++;
             } else {
-                OEILog.warn("替换失败：{} 或 {} 未找到（可能是无效的物品 ID）", sourceId, targetId);
+                LOGGER.warn("替换失败：{} 或 {} 未找到（可能是无效的物品 ID）", sourceId, targetId);
                 failCount++;
             }
         }
         
         initialized = true;
-        OEILog.debug("Item redirector initialized with {} redirects (成功：{}, 失败：{})",
+        LOGGER.debug("Item redirector initialized with {} redirects (成功：{}, 失败：{})",
                 redirectMap.size(), successCount, failCount);
     }
     
@@ -90,7 +93,7 @@ public class ItemRedirector {
         if (redirected != null) {
             String sourceId = getItemId(original);
             String targetId = getItemId(redirected);
-            OEILog.debug("物品实例缓存命中：{} -> {}", sourceId, targetId);
+            LOGGER.debug("物品实例缓存命中：{} -> {}", sourceId, targetId);
             return redirected;
         }
         
@@ -99,7 +102,7 @@ public class ItemRedirector {
         if (redirected != null) {
             String sourceId = getItemId(original);
             String targetId = getItemId(redirected);
-            OEILog.debug("物品查找触发替换：{} -> {}", sourceId, targetId);
+            LOGGER.debug("物品查找触发替换：{} -> {}", sourceId, targetId);
             return redirected;
         }
         
@@ -117,7 +120,7 @@ public class ItemRedirector {
             String sourceId = getItemId(sourceItem);
             String targetId = getItemId(targetItem);
             redirectMap.put(sourceItem, targetItem);
-            OEILog.info("添加物品替换：{} -> {}", sourceId, targetId);
+            LOGGER.info("添加物品替换：{} -> {}", sourceId, targetId);
         }
     }
     

@@ -1,6 +1,8 @@
 package com.mafuyu404.oneenoughitem.client.gui.cache;
 
-import com.mafuyu404.oneenoughitem.util.OEILog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -13,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class EditorCache {
+    private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
     private static final String CACHE_FILENAME = "oneenoughitem_editor_cache.dat";
     
     /**
@@ -27,22 +30,22 @@ public class EditorCache {
                 Path worldPath = mc.getSingleplayerServer().getWorldPath(
                     net.minecraft.world.level.storage.LevelResource.ROOT);
                 Path cachePath = worldPath.resolve(CACHE_FILENAME);
-                OEILog.debug("Using world-specific cache: {}", cachePath);
+                LOGGER.debug("Using world-specific cache: {}", cachePath);
                 return cachePath;
             }
             
             // 如果在多人游戏中，不使用缓存或使用全局缓存
             if (mc.level != null && mc.getConnection() != null) {
-                OEILog.debug("Multiplayer detected, using global cache");
+                LOGGER.debug("Multiplayer detected, using global cache");
                 return Paths.get("config", "oneenoughitem_" + CACHE_FILENAME);
             }
             
             // 主菜单或其他情况，使用全局缓存
-            OEILog.debug("Using global cache in config directory");
+            LOGGER.debug("Using global cache in config directory");
             return Paths.get("config", "oneenoughitem_" + CACHE_FILENAME);
             
         } catch (Exception e) {
-            OEILog.error("Failed to determine cache path, using default", e);
+            LOGGER.error("Failed to determine cache path, using default", e);
             return Paths.get("config", "oneenoughitem_" + CACHE_FILENAME);
         }
     }
@@ -85,17 +88,17 @@ public class EditorCache {
                 dos.flush();
             }
 
-            OEILog.info("Editor cache saved to: {}", cacheFile);
+            LOGGER.info("Editor cache saved to: {}", cacheFile);
 
         } catch (IOException e) {
-            OEILog.error("Failed to save editor cache", e);
+            LOGGER.error("Failed to save editor cache", e);
         }
     }
 
     public static CacheData loadCache() {
         Path cacheFile = getCacheFilePath();
         if (!Files.exists(cacheFile)) {
-            OEILog.debug("Cache file not found: {}", cacheFile);
+            LOGGER.debug("Cache file not found: {}", cacheFile);
             return null;
         }
 
@@ -120,11 +123,11 @@ public class EditorCache {
                 fileName = null;
             }
 
-            OEILog.info("Editor cache loaded from: {}", cacheFile);
+            LOGGER.info("Editor cache loaded from: {}", cacheFile);
             return new CacheData(matchItems, matchTags, resultItem, resultTag, fileName);
 
         } catch (IOException e) {
-            OEILog.error("Failed to load editor cache from: " + cacheFile, e);
+            LOGGER.error("Failed to load editor cache from: " + cacheFile, e);
             return null;
         }
     }
@@ -147,12 +150,12 @@ public class EditorCache {
         try {
             if (Files.exists(cacheFile)) {
                 Files.delete(cacheFile);
-                OEILog.info("Editor cache cleared: {}", cacheFile);
+                LOGGER.info("Editor cache cleared: {}", cacheFile);
             } else {
-                OEILog.debug("Cache file does not exist, nothing to clear: {}", cacheFile);
+                LOGGER.debug("Cache file does not exist, nothing to clear: {}", cacheFile);
             }
         } catch (IOException e) {
-            OEILog.error("Failed to clear editor cache from: " + cacheFile, e);
+            LOGGER.error("Failed to clear editor cache from: " + cacheFile, e);
         }
     }
 }

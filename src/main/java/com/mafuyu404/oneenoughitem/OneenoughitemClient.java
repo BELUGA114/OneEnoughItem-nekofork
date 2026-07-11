@@ -1,9 +1,11 @@
 package com.mafuyu404.oneenoughitem;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mafuyu404.oneenoughitem.client.ModKeyMappings;
 import com.mafuyu404.oneenoughitem.event.ClientEventHandler;
 import com.mafuyu404.oneenoughitem.event.ModClientEventHandler;
-import com.mafuyu404.oneenoughitem.util.OEILog;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,22 +16,23 @@ import net.fabricmc.api.Environment;
  */
 @Environment(EnvType.CLIENT)
 public class OneenoughitemClient implements ClientModInitializer {
+    private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
     @Override
     public void onInitializeClient() {
         
         try {
             ModKeyMappings.register();
-            OEILog.debug("Key mappings registered");
+            LOGGER.debug("Key mappings registered");
             
             ClientEventHandler.register();
-            OEILog.debug("Client event handler registered");
+            LOGGER.debug("Client event handler registered");
             
             ModClientEventHandler.register();
-            OEILog.debug("Mod client event handler registered");
+            LOGGER.debug("Mod client event handler registered");
             
-            OEILog.info("OneEnoughItem Client Initialized Successfully");
+            LOGGER.info("OneEnoughItem Client Initialized Successfully");
         } catch (Exception e) {
-            OEILog.error("Critical error during client initialization!", e);
+            LOGGER.error("Critical error during client initialization!", e);
             throw new RuntimeException("Failed to initialize OneEnoughItem Client", e);
         }
     }

@@ -1,6 +1,8 @@
 package com.mafuyu404.oneenoughitem.client.gui.util;
 
-import com.mafuyu404.oneenoughitem.util.OEILog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.storage.LevelResource;
 
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class PathUtils {
+    private static final Logger LOGGER = LogManager.getLogger("oneenoughitem");
 
     /**
      * 获取数据包路径
@@ -43,7 +46,7 @@ public class PathUtils {
                     }
                 }
             } catch (Exception e) {
-                OEILog.warn("Failed to determine world path", e);
+                LOGGER.warn("Failed to determine world path", e);
             }
         }
 
@@ -69,7 +72,7 @@ public class PathUtils {
                     return worldPath.resolve("datapacks").resolve("OEI").resolve("data/oneenoughitem/replacements");
                 }
             } catch (Exception e) {
-                OEILog.warn("Failed to determine world path", e);
+                LOGGER.warn("Failed to determine world path", e);
             }
         }
 
@@ -95,7 +98,7 @@ public class PathUtils {
                     return worldPath.resolve("datapacks");
                 }
             } catch (Exception e) {
-                OEILog.warn("Failed to determine world path", e);
+                LOGGER.warn("Failed to determine world path", e);
             }
         }
 
@@ -112,7 +115,7 @@ public class PathUtils {
         try {
             Path datapacksPath = getDatapacksPath();
             if (!Files.exists(datapacksPath)) {
-                OEILog.warn("Datapacks directory does not exist: {}", datapacksPath);
+                LOGGER.warn("Datapacks directory does not exist: {}", datapacksPath);
                 return jsonFiles;
             }
 
@@ -127,7 +130,7 @@ public class PathUtils {
                         });
             }
         } catch (IOException e) {
-            OEILog.error("Failed to scan replacement files", e);
+            LOGGER.error("Failed to scan replacement files", e);
         }
         return jsonFiles;
     }
@@ -151,7 +154,7 @@ public class PathUtils {
                         jsonFiles.add(new FileInfo(displayName, path, fullPath, datapackName));
                     });
         } catch (IOException e) {
-            OEILog.error("Failed to scan files in directory: {}", replacementsPath, e);
+            LOGGER.error("Failed to scan files in directory: {}", replacementsPath, e);
         }
     }
 
@@ -175,7 +178,7 @@ public class PathUtils {
                         .orElse(null);
             }
         } catch (IOException e) {
-            OEILog.error("Error finding current world path", e);
+            LOGGER.error("Error finding current world path", e);
             return null;
         }
     }
