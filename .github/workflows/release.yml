@@ -38,13 +38,16 @@ jobs:
           echo "$MSG" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
+      - name: Prepare release artifacts
+        run: |
+          mkdir -p release
+          cp build/libs/OEI-nekofork-fabric-mc1.21.1-*.jar release/
+          rm -f release/*-sources.jar release/*-dev.jar
+          cp libs/OELib-0.0.1.jar release/
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ env.TAG_MESSAGE }}
           tag_name: ${{ github.ref_name }}
-          files: |
-            build/libs/*.jar
-            !build/libs/*-sources.jar
-            !build/libs/*-dev.jar
-            libs/OELib-0.0.1.jar
+          files: release/*
