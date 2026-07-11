@@ -50,18 +50,13 @@ public class Utils {
         TagKey<Item> tagKey = TagKey.create(Registries.ITEM, tagId);
         Collection<Item> result = new HashSet<>();
 
-        LOGGER.debug("Attempting to resolve tag: {}", tagId);
-
         var tagOptional = registryLookup.get(tagKey);
         if (tagOptional.isPresent()) {
             var holderSet = tagOptional.get();
             for (var holder : holderSet) {
                 result.add(holder.value());
             }
-            LOGGER.debug("Tag {} resolved to {} items: {}",
-                    tagId, result.size(),
-                    result.stream().map(Utils::getItemRegistryName).toList());
-            
+
             // 添加到缓存
             TAG_CACHE.put(tagId, result);
         } else {

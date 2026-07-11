@@ -222,7 +222,7 @@ public class ReplacementEditorManager {
                 try (FileWriter writer = new FileWriter(packMcmetaPath.toFile())) {
                     writer.write(packMcmetaContent);
                 }
-                LOGGER.info("Created pack.mcmeta file: {}", packMcmetaPath);
+                LOGGER.debug("Created pack.mcmeta file: {}", packMcmetaPath);
             }
 
             Path filePath = replacementsPath.resolve(fileName + ".json");
@@ -238,7 +238,7 @@ public class ReplacementEditorManager {
             this.currentObjectIndex = -1;
 
             this.showMessage(Component.translatable("message.oneenoughitem.file_created", filePath.toString()).withStyle(ChatFormatting.GREEN));
-            LOGGER.info("Created replacement file: {}", filePath);
+            LOGGER.debug("Created replacement file: {}", filePath);
 
         } catch (IOException e) {
             this.showError(Component.translatable("error.oneenoughitem.file_create_failed", e.getMessage()).withStyle(ChatFormatting.RED));
@@ -406,7 +406,7 @@ public class ReplacementEditorManager {
             }
 
             this.saveJsonObjectsToFile(this.currentJsonObjects);
-            LOGGER.info("Saved replacement to file: {}", this.currentFilePath);
+            LOGGER.debug("Saved replacement to file: {}", this.currentFilePath);
 
         } catch (IOException e) {
             this.showError(Component.translatable("error.oneenoughitem.save_failed", e.getMessage()).withStyle(ChatFormatting.RED));

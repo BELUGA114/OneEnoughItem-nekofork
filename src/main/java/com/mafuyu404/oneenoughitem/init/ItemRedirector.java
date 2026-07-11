@@ -63,7 +63,7 @@ public class ItemRedirector {
             
             if (sourceItem != Items.AIR && targetItem != Items.AIR) {       //过滤掉无效的物品 ID
                 redirectMap.put(sourceItem, targetItem);
-                LOGGER.info("物品替换：{} -> {}", sourceId, targetId);
+                LOGGER.debug("物品替换：{} -> {}", sourceId, targetId);
                 successCount++;
             } else {
                 LOGGER.warn("替换失败：{} 或 {} 未找到（可能是无效的物品 ID）", sourceId, targetId);
@@ -120,7 +120,7 @@ public class ItemRedirector {
             String sourceId = getItemId(sourceItem);
             String targetId = getItemId(targetItem);
             redirectMap.put(sourceItem, targetItem);
-            LOGGER.info("添加物品替换：{} -> {}", sourceId, targetId);
+            LOGGER.debug("添加物品替换：{} -> {}", sourceId, targetId);
         }
     }
     

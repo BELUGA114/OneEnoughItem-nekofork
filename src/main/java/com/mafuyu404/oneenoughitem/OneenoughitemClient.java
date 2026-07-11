@@ -22,14 +22,8 @@ public class OneenoughitemClient implements ClientModInitializer {
         
         try {
             ModKeyMappings.register();
-            LOGGER.debug("Key mappings registered");
-            
             ClientEventHandler.register();
-            LOGGER.debug("Client event handler registered");
-            
             ModClientEventHandler.register();
-            LOGGER.debug("Mod client event handler registered");
-            
             LOGGER.info("OneEnoughItem Client Initialized Successfully");
         } catch (Exception e) {
             LOGGER.error("Critical error during client initialization!", e);

@@ -31,15 +31,12 @@ public class ModEventHandler {
 
     public static void onDataReload(Class<?> dataClass, int loadedCount, int invalidCount) {
         if (dataClass == Replacements.class) {
-            LOGGER.debug("收到以下数据重新加载事件：{}", dataClass.getSimpleName());
             // 清除旧缓存
             Utils.clearTagCache();
             ReplacementCache.clearCache();
             rebuildReplacementCache();
             // 初始化物品重定向器
             ItemRedirector.initialize();
-            LOGGER.debug("重建替换缓存：已加载 {} 个条目，{} 无效",
-                    loadedCount, invalidCount);
         }
     }
 
@@ -57,11 +54,11 @@ public class ModEventHandler {
         if (server != null) {
             HolderLookup.RegistryLookup<Item> registryLookup = server.registryAccess().lookupOrThrow(Registries.ITEM);
             count = ReplacementCache.rebuildFromManager(manager, registryLookup);
-            LOGGER.info("服务端缓存重建完成，共 {} 条规则", count);
+            LOGGER.debug("服务端缓存重建完成，共 {} 条规则", count);
         } else {
             HolderLookup.RegistryLookup<Item> clientRegistryLookup = BuiltInRegistries.ITEM.asLookup();
             count = ReplacementCache.rebuildFromManager(manager, clientRegistryLookup);
-            LOGGER.info("客户端缓存重建完成（通过 ModEventHandler），共 {} 条规则", count);
+            LOGGER.debug("客户端缓存重建完成（通过 ModEventHandler），共 {} 条规则", count);
         }
 
         ItemRedirector.initialize();

@@ -86,7 +86,7 @@ public class ReplacementCache {
             putReplacement(replacement, registryLookup);
         }
 
-        LOGGER.info("缓存重建完成，共 {} 条替换规则", replacements.size());
+        LOGGER.debug("缓存重建完成，共 {} 条替换规则", replacements.size());
         return replacements.size();
     }
 }

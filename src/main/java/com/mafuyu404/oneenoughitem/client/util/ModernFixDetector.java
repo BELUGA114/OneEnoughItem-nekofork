@@ -20,14 +20,11 @@ public class ModernFixDetector {
     private static boolean hasShownWarning = false;
 
     public static boolean isModernFixInstalled() {
-        boolean installed = FabricLoader.getInstance().isModLoaded(MODERNFIX_MODID);
-        LOGGER.debug("ModernFix installed: {}", installed);
-        return installed;
+        return FabricLoader.getInstance().isModLoaded(MODERNFIX_MODID);
     }
 
     public static boolean isFasterIngredientsEnabled() {
         Path configPath = getConfigPath();
-        LOGGER.debug("Checking ModernFix config at: {}", configPath);
 
         if (!Files.exists(configPath)) {
             LOGGER.warn("ModernFix config file not found: {}", configPath);
@@ -59,13 +56,10 @@ public class ModernFixDetector {
     }
 
     public static boolean shouldShowWarning() {
-        boolean should = !hasShownWarning && isModernFixInstalled() && isFasterIngredientsEnabled();
-        LOGGER.debug("Should show warning: {}", should);
-        return should;
+        return !hasShownWarning && isModernFixInstalled() && isFasterIngredientsEnabled();
     }
 
     public static void markWarningShown() {
         hasShownWarning = true;
-        LOGGER.debug("Marked ModernFix warning as shown.");
     }
 }

@@ -45,8 +45,6 @@ public class ReplacementValidator implements DataValidator.ServerContextAware<Re
                     if (!tagItems.isEmpty()) {
                         hasValidSource = true;
                         validSourceCount += tagItems.size();
-                        LOGGER.debug("Valid tag in {}: '{}' contains {} items",
-                                source, matchItem, tagItems.size());
                     }
                     }else {
                         LOGGER.warn("Tag in {} is empty: '{}'",
@@ -71,9 +69,6 @@ public class ReplacementValidator implements DataValidator.ServerContextAware<Re
         if (!hasValidSource) {
             return ValidationResult.failure("No valid source items found for target '" + replacement.resultItems() + "'");
         }
-
-        LOGGER.debug("Replacement in {} validated: {} source items -> {}",
-                source, validSourceCount, replacement.resultItems());
 
         return ValidationResult.success();
     }

@@ -29,19 +29,10 @@ public class EditorCache {
             if (mc.getSingleplayerServer() != null) {
                 Path worldPath = mc.getSingleplayerServer().getWorldPath(
                     net.minecraft.world.level.storage.LevelResource.ROOT);
-                Path cachePath = worldPath.resolve(CACHE_FILENAME);
-                LOGGER.debug("Using world-specific cache: {}", cachePath);
-                return cachePath;
+                return worldPath.resolve(CACHE_FILENAME);
             }
-            
-            // 如果在多人游戏中，不使用缓存或使用全局缓存
-            if (mc.level != null && mc.getConnection() != null) {
-                LOGGER.debug("Multiplayer detected, using global cache");
-                return Paths.get("config", "oneenoughitem_" + CACHE_FILENAME);
-            }
-            
-            // 主菜单或其他情况，使用全局缓存
-            LOGGER.debug("Using global cache in config directory");
+
+            // 多人游戏或主菜单，使用全局缓存
             return Paths.get("config", "oneenoughitem_" + CACHE_FILENAME);
             
         } catch (Exception e) {
@@ -88,7 +79,7 @@ public class EditorCache {
                 dos.flush();
             }
 
-            LOGGER.info("Editor cache saved to: {}", cacheFile);
+            LOGGER.debug("Editor cache saved to: {}", cacheFile);
 
         } catch (IOException e) {
             LOGGER.error("Failed to save editor cache", e);
@@ -123,7 +114,7 @@ public class EditorCache {
                 fileName = null;
             }
 
-            LOGGER.info("Editor cache loaded from: {}", cacheFile);
+            LOGGER.debug("Editor cache loaded from: {}", cacheFile);
             return new CacheData(matchItems, matchTags, resultItem, resultTag, fileName);
 
         } catch (IOException e) {
@@ -150,7 +141,7 @@ public class EditorCache {
         try {
             if (Files.exists(cacheFile)) {
                 Files.delete(cacheFile);
-                LOGGER.info("Editor cache cleared: {}", cacheFile);
+                LOGGER.debug("Editor cache cleared: {}", cacheFile);
             } else {
                 LOGGER.debug("Cache file does not exist, nothing to clear: {}", cacheFile);
             }
